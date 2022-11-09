@@ -1,3 +1,3 @@
-# AirLine-Reservation-System
+# AirLine Ticket Reservation-System
 
-Tahmidur did not work on the project at all! 
+Tahmidur is gay! 
