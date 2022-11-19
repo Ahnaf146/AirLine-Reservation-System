@@ -1,9 +1,17 @@
 from flask import Flask, render_template
-
+import pymsql.cursor
 
 
 
 app = Flask(__name__)
+
+conn = pymsql.connect(host = 'localhost',
+                       user = 'root', 
+                       password= 'root',
+                       db='meetup',
+                       charset='utf8mb4',
+                       cursorclass=pymsql.cursors.DictCursor)
+                        )
 
 @app.route('/')
 def hello():
