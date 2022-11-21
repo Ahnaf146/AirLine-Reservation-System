@@ -1,9 +1,6 @@
 from flask import Flask, render_template, request, session, url_for, redirect
+'''
 import pymsql.cursor
-
-
-
-app = Flask(__name__)
 
 conn = pymsql.connect(host = 'localhost',
                        user = 'root', 
@@ -13,6 +10,11 @@ conn = pymsql.connect(host = 'localhost',
                        cursorclass=pymsql.cursors.DictCursor
                     )
 app.secret_key = ''
+
+'''
+
+
+app = Flask(__name__)
 
 
 
@@ -29,6 +31,7 @@ def login():
 def register():
 	return render_template('register.html')
 
+'''
 #Authenticates the login
 @app.route('/loginAuth', methods=['GET', 'POST'])
 def loginAuth():
@@ -113,6 +116,7 @@ def logout():
 	session.pop('username')
 	return redirect('/')
 
+'''
 
 if __name__ == "__main__": 
     app.run('127.0.0.1', 5000, debug= True )
