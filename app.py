@@ -1,4 +1,6 @@
 from flask import Flask, render_template, request, session, url_for, redirect
+#from flask_mysqldb import MySQL
+
 '''
 import pymsql.cursor
 
@@ -10,13 +12,9 @@ conn = pymsql.connect(host = 'localhost',
                        cursorclass=pymsql.cursors.DictCursor
                     )
 app.secret_key = ''
-
 '''
 
-
 app = Flask(__name__)
-
-
 
 @app.route('/')
 def hello():
@@ -36,6 +34,14 @@ def register():
 def profile():
 	return render_template("MyProfile.html")
 
+@app.route('/statistics')
+def statistics():
+	return render_template("Statistics.html")
+
+@app.route('/payment')
+def payment():
+	return render_template("Payment.html")
+	
 '''
 #Authenticates the login
 @app.route('/loginAuth', methods=['GET', 'POST'])

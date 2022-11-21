@@ -1,9 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel= "stylesheet" href = "{{ url_for('static', filename='css/login.css')}}">
 </head>
 <body>
-    <p> Choose payment method </p> 
+    <h1 style= "text-align:center"> Choose payment method </h1> 
+    <!-- Card type- credit/debit, card number, name on card, expiration date -->
+    <div id = "payment_info">
+    <form method = "POST"> 
+        <label for="credit/debit"> Type of credit card</label> <br>
+        <input type="radio" id="credit" name="credit/debit" value="credit/debit">
+        <label for="credit"> Credit Card </label> <br>
+        <input type="radio" id="debit" name="credit/debit" value="credit/debit">
+        <label for="debit"> Debit Card </label> <br>
+        <label for= "card_num"> Card number </label>
+        <input type="text" id = "card_num" value= ""> <br> 
+        <label for ="card_name"> Name on card </label>
+        <input type="text" id = "card_name" value= "">
+        <label for ="exp_date"> Expiration Date (mm/yy) </label>
+        <input type="text" id = "exp_date" value= "">
+        <button type="submit" form="form" value="Submit">Submit</button>
+    </form>
+    </div>
 </body>
 </html>
 
