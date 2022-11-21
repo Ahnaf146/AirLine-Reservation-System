@@ -32,6 +32,10 @@ def login():
 def register():
 	return render_template('Register.html')
 
+@app.route('/profile')
+def profile():
+	return render_template("MyProfile.html")
+
 '''
 #Authenticates the login
 @app.route('/loginAuth', methods=['GET', 'POST'])

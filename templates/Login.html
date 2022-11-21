@@ -1,17 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Document</title>
+    <link rel= "stylesheet" href = "{{ url_for('static', filename='css/login.css')}}">
 </head>
 <body>
     <h1 style= "text-align: center"> Login to continue using the platform</h1>
 
-    <form> 
-        <label for="username"> Username/email: </label> <br>
-        <input type="text" id= "fname" name="fname"><br>
-        <label for="password">password:</label> <br> 
-        <input type="text" id="lname" name="lname">
-        <button type="submit" form=="form" value="Submit">Submit</button>
+    <form>
+        <div class = "container"> 
+            <strong> <label for="username"> Username/email: </label> <br> </strong>
+            <input type="text" id= "fname" name="fname"><br>
+            <strong> <label for="password">password:</label> <br> </strong>
+            <input type="text" id="lname" name="lname">
+            <button type="submit" form=="form" value="Submit">Submit</button>
+        </div>
 
     </form>
     
