@@ -22,14 +22,15 @@ app = Flask(__name__)
 def hello():
     return render_template('HomePage.html')
 
+#Define route for login
 @app.route('/login')
 def login():
-	return render_template('login.html')
+	return render_template('Login.html')
 
 #Define route for register
 @app.route('/register')
 def register():
-	return render_template('register.html')
+	return render_template('Register.html')
 
 '''
 #Authenticates the login
