@@ -1,48 +1,31 @@
 from flask import Flask, render_template, request, session, url_for, redirect
 #from flask_mysqldb import MySQL
 
-'''
-import pymsql.cursor
-
-conn = pymsql.connect(host = 'localhost',
-                       user = 'root', 
-                       password= 'root',
-                       db='meetup',
-                       charset='utf8mb4',
-                       cursorclass=pymsql.cursors.DictCursor
-                    )
-app.secret_key = ''
-'''
-
 app = Flask(__name__)
-
-@app.route('/')
-def hello():
-    return render_template('HomePage.html')
-
-#Define route for login
-@app.route('/login')
-def login():
-	return render_template('Login.html')
-
-#Define route for register
-@app.route('/register')
-def register():
-	return render_template('Register.html')
-
-@app.route('/profile')
-def profile():
-	return render_template("MyProfile.html")
-
-@app.route('/statistics')
-def statistics():
-	return render_template("Statistics.html")
-
-@app.route('/payment')
-def payment():
-	return render_template("Payment.html")
-	
 '''
+Code to connect to mysql
+app.config['MYSQL_HOST'] = 'localhost'
+app.config['MYSQL_USER'] = 'root'
+app.config['MYSQL_PASSWORD'] = ''
+app.config['MYSQL_DB'] = 'flask'
+app.config['MYSQL_PORT'] = 3306
+
+mysql = MySQL(app)
+
+@app.route('/login', methods = ['POST', 'GET'])
+def login():
+	if request.method == 'GET':
+		return "Login via the login Form"
+	if request.method == 'POST':
+		name = request.form['name']
+		age = request.form['age']
+		cursor = mysql.connection.cursor()
+		cursor.execute(#INSERT INTO info_table VALUES(%s,%s),(name,age))
+		mysql.connection.commit()
+		cursor.close()
+		return "success"
+	return render_template('Login.html')
+	
 #Authenticates the login
 @app.route('/loginAuth', methods=['GET', 'POST'])
 def loginAuth():
@@ -128,6 +111,35 @@ def logout():
 	return redirect('/')
 
 '''
+
+#Init 
+@app.route('/')
+def hello():
+    return render_template('HomePage.html')
+#Define route for login
+
+@app.route('/login')
+def login():
+	return render_template('Login.html')
+
+
+#Define route for register
+@app.route('/register')
+def register():
+	return render_template('Register.html')
+
+@app.route('/profile')
+def profile():
+	return render_template("MyProfile.html")
+
+@app.route('/statistics')
+def statistics():
+	return render_template("Statistics.html")
+
+@app.route('/payment')
+def payment():
+	return render_template("Payment.html")
+
 
 if __name__ == "__main__": 
     app.run('127.0.0.1', 5000, debug= True )
