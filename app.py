@@ -3,6 +3,21 @@ from flask import Flask, render_template, request, session, url_for, redirect
 
 app = Flask(__name__)
 '''
+app.static_folder = 'static'
+app.config['MYSQL_USER'] = 'root'
+app.config['MYSQL_PASSWORD'] = '***' # TODO: Change this password
+app.config['MYSQL_DB'] = 'Air Ticket Reservation System'
+app.config['MYSQL_PORT'] = 3306
+'''
+
+# mysql = MySQL(app)
+
+
+#Configure
+#  MySql
+
+
+'''
 Code to connect to mysql
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
@@ -78,7 +93,7 @@ def registerAuth():
 		cursor.execute(ins, (username, password))
 		conn.commit()
 		cursor.close()
-		return render_template('index.html')
+		return render_template('MyProfile.html')
 
 @app.route('/home')
 def home():
@@ -110,6 +125,17 @@ def logout():
 	session.pop('username')
 	return redirect('/')
 
+
+@auth.route('/login', methods= ['GET', 'POST'])
+def login():
+
+@auth.route('/sign-up', methods= ['GET', 'POST'] 
+def sign_up():
+	if request.method == "POST":
+		email = request.form.get('firstName')
+	
+
+
 '''
 
 #Init 
@@ -121,7 +147,6 @@ def hello():
 @app.route('/login')
 def login():
 	return render_template('Login.html')
-
 
 #Define route for register
 @app.route('/register')
