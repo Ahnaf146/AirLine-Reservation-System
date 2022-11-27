@@ -162,6 +162,8 @@ def register():
 	return render_template('Register.html')
 
 @app.route('/profile')
+#Load up any flights where id is the same 
+#And display them 
 def profile():
 	return render_template("MyProfile.html")
 
@@ -176,8 +178,12 @@ def payment():
 #Adds the flight,airport, and airplane
 @app.route('/addinfo')
 def addinfo():
-	
+
 	return render_template('AddInfo.html')
+
+@app.route('/bookflight')
+def bookflight():
+	return render_template('BookFlight.html')
 
 #Adds confirmation page
 @app.route('/confirm')
