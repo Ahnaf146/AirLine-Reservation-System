@@ -133,7 +133,9 @@ def login():
 def sign_up():
 	if request.method == "POST":
 		email = request.form.get('firstName')
-	
+
+
+
 
 
 '''
@@ -147,6 +149,12 @@ def hello():
 @app.route('/login')
 def login():
 	return render_template('Login.html')
+
+@app.route('/logout')
+def logout():
+	session.pop('username')
+	return redirect('/')
+
 
 #Define route for register
 @app.route('/register')
@@ -164,6 +172,17 @@ def statistics():
 @app.route('/payment')
 def payment():
 	return render_template("Payment.html")
+
+#Adds the flight,airport, and airplane
+@app.route('/addinfo')
+def addinfo():
+	
+	return render_template('AddInfo.html')
+
+#Adds confirmation page
+@app.route('/confirm')
+def confirm():
+	return render_template('Finalize.html')
 
 
 if __name__ == "__main__": 

@@ -4,7 +4,47 @@
     <title>Document</title>
 </head>
 <body>
-    <h1> </h1>
+    <!-- Soon extract the available flight times from sql database with option and fill in with python-->
+    <h1> Add flight </h1>
+    <form action='POST'> 
+        <label for="Flight_time">Flight </label>
+            <select name = "flights" id="Flight_time">
+                <option value="9pm"> 9pm</option>
+                <option value="5pm"> 5pm</option>
+                <option value="12pm"> 12pm</option>
+            </select>
+            <input type="submit" value="Submit"/> 
+    </form>
+
+    <h1> Add Airplane </h1>
+    <form action="POST">
+        <label for ="Airplane"> Airplane </label> 
+        <select name = "Airplane" id="Flight_time">
+            <option value="Airplane_1"> Jet Blue</option>
+            <option value="Airplane_2"> Boeing749</option>
+            <option value="Airplane_3"> Boeing750</option>
+        </select>
+        <input type="submit" value="Submit"/> 
+    </form>
+
+    <h1> Add Airport </h1>
+    <form action = "POST">
+        <label for ="Airport"> Airport </label> 
+        <select name = "Airplane" id="Flight_time">
+            <option value="Airport1"> JFK</option>
+            <option value="Airport2"> PVG</option>
+        </select>
+        <input type="submit" value="Submit"/> 
+    </form>
+
+    <br> 
+
+    <a href = "/confirm">
+    <button class="button">Continue!</button>
+    </a>
+    </br>
+
+
     
 </body>
 </html>
