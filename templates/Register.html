@@ -4,24 +4,40 @@
     <link rel= "stylesheet" href = "{{ url_for('static', filename='css/login.css')}}">
 </head>
 <body>
+    <a href = "/staffregister"> 
+    <button>Register for airline staff</button>
+    </a>
     <h1 style= "text-align:center">Register to use our platform</h1>
-    
-    <form method = 'POST'> 
-        <div class= "container"> 
-            <strong>  <label for="fname"> First name: </label> </strong>
-            <input type="text" id= "fname" name="fname"><br> 
-            <strong> <label for="lname">Last Name:</label> </strong>
-            <input type="text" id="lname" name="lname"><br> 
-            <strong> <label for="fname"> Username </label> </strong>
-            <input type="text" id="username" name="username"><br> 
-            <strong> <label for="fname"> Password </label> </strong>
-            <input type="text" id="password" name="password"> <br>
-            <a href= "/profile">
-            <button type="submit" form="form" value="Submit">Submit</button>
-            </a>
-        </div>
 
-    </form>
+    <div>
+        <form action="/payment">
+          <label for="fname">First Name</label>
+          <input type="text" id="fname" name="firstname" placeholder="First Name">
+      
+          <label for="lname">Last Name</label>
+          <input type="text" id="lname" name="lastname" placeholder="Last Name">
+
+          <label for="building_num">Building number</label>
+          <input type="text" id="building_num" name="building_num" placeholder="Building Number">
+
+          <label for="street">Street</label>
+          <input type="text" id="street" name="street" placeholder="Street">
+
+          <label for="city">city</label>
+          <input type="text" id="city" name="city" placeholder="city">
+
+          <label for="State">State</label>
+          <input type="text" id="State" name="State" placeholder="State">
+          
+          <label for="passport">passport</label>
+          <input type="text" id="passport" name="passport" placeholder="passport">
+
+          <a href = "/profile">
+          <input type="submit" value="Submit">
+          </a>
+
+        </form>
+    </div>
 
 
     
