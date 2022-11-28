@@ -2,7 +2,18 @@ from flask import Flask, render_template, request, session, url_for, redirect
 #from flask_mysqldb import MySQL
 
 app = Flask(__name__)
+
+
 '''
+app.config['MYSQL_HOST'] = 'localhost'
+app.config['MYSQL_USER'] = 'root'
+app.config['MYSQL_PASSWORD'] = ''
+app.config['MYSQL_DB'] = 'flask'
+app.config['MYSQL_PORT'] = 3306
+
+mysql = MySQL(app)
+
+
 app.static_folder = 'static'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = '***' # TODO: Change this password
@@ -15,17 +26,7 @@ app.config['MYSQL_PORT'] = 3306
 
 #Configure
 #  MySql
-
-
 '''
-Code to connect to mysql
-app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = ''
-app.config['MYSQL_DB'] = 'flask'
-app.config['MYSQL_PORT'] = 3306
-
-mysql = MySQL(app)
 
 @app.route('/login', methods = ['POST', 'GET'])
 def login():
@@ -148,6 +149,7 @@ def hello():
 
 @app.route('/login')
 def login():
+
 	return render_template('Login.html')
 
 @app.route('/logout')
@@ -155,10 +157,10 @@ def logout():
 	session.pop('username')
 	return redirect('/')
 
-
 #Define route for register
 @app.route('/register')
 def register():
+
 	return render_template('Register.html')
 
 @app.route('/profile')
@@ -169,20 +171,47 @@ def profile():
 
 @app.route('/statistics')
 def statistics():
+
 	return render_template("Statistics.html")
 
-@app.route('/payment')
+@app.route('/payment', methods=['GET', 'POST'])
 def payment():
+	username = session['username']
+	cursor = conn.cursor()
+	card_type = request.form['credit/debit']
+	card_num = request.form['card_num']
+	name_on_card = request.form['card_name']
+	exp_date = request.form['exp_date']
+	query = 'SELECT * FROM Ticket WHERE username = %s'
+	cursor.execute(query, (username))
+	data = cursor.fetchone()
+
+	if(data):
+		error = 'Payment information already exists'
+		return render_template('payment.html', error=error)
+	else:
+		new_info = 'INSERT INTO user VALUES(%s, %s, %s, %s)'
+		cursor.execute(new_info, (card_type, card_num, name_on_card, exp_date))
+		conn.commit()
+		cursor.close()
+		return render_template('Finalize.html')
+
+
+
+
+
 	return render_template("Payment.html")
 
 #Adds the flight,airport, and airplane
 @app.route('/addinfo')
 def addinfo():
 
+
 	return render_template('AddInfo.html')
 
 @app.route('/bookflight')
 def bookflight():
+
 	return render_template('BookFlight.html')
 
 #Adds confirmation page
