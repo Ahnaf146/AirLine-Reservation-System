@@ -21,6 +21,9 @@ conn = pymysql.connect(host='localhost',
 
 
 @app.route('/')
+#Home page: 
+	#Renders homepage with login and register functionality 
+	#Displays current and future flight times
 def home():
 	cursor = conn.cursor()
 	query = 'SELECT * from Flight'
@@ -30,7 +33,9 @@ def home():
 		print(each['flight_number'])
 	cursor.close()
 	return render_template('HomePage.html', flights=data1)
+
 '''
+
 @app.route('/login', methods = ['POST', 'GET'])
 def login():
 	if request.method == 'POST':
