@@ -18,13 +18,24 @@ conn = pymysql.connect(host='localhost',
 #Configure
 #  MySql 
 
+
+
+@app.route('/')
+def home():
+	cursor = conn.cursor()
+	query = 'SELECT * from Flight'
+	cursor.execute(query)
+	data1 = cursor.fetchall()
+	for each in data1:
+		print(each['flight_number'])
+	cursor.close()
+	return render_template('HomePage.html', flights=data1)
+'''
 @app.route('/login', methods = ['POST', 'GET'])
 def login():
-	if request.method == 'GET':
-		return "Login via the login Form"
 	if request.method == 'POST':
-		name = request.form['name']
-		age = request.form['age']
+		username = request.form['username']
+		password = request.form['password']
 		cursor = mysql.connection.cursor()
 		cursor.execute('INSERT INTO info_table VALUES(%s,%s),(name,age)')
 		mysql.connection.commit()
@@ -88,7 +99,6 @@ def registerAuth():
 
 @app.route('/home')
 def home():
-    
     username = session['username']
     cursor = conn.cursor()
     query = 'SELECT ts, blog_post FROM blog WHERE username = %s ORDER BY ts DESC'
@@ -99,47 +109,28 @@ def home():
     cursor.close()
     return render_template('home.html', username=username, posts=data1)
 
-		
-@app.route('/post', methods=['GET', 'POST'])
-def post():
-	username = session['username']
-	cursor = conn.cursor()
-	blog = request.form['blog']
-	query = 'INSERT INTO blog (blog_post, username) VALUES(%s, %s)'
-	cursor.execute(query, (blog, username))
-	conn.commit()
-	cursor.close()
-	return redirect(url_for('home'))
 
 @app.route('/logout')
 def logout():
 	session.pop('username')
 	return redirect('/')
-	
-'''
 
-@app.route('/login', methods= ['GET', 'POST'])
-def login():
 @app.route('/sign-up', methods= ['GET', 'POST'])
 def sign_up():
 	if request.method == "POST":
 		email = request.form.get('firstName')
-'''
-
 #Init 
 @app.route('/')
 def hello():
     return render_template('HomePage.html')
 #Define route for login
 
-@app.route('/login')
-def login():
-	return render_template('Login.html')
 
-@app.route('/logout')
-def logout():
-	session.pop('username')
-	return redirect('/')
+
+# @app.route('/login')
+# def login():
+# 	return render_template('Login.html')
+
 
 #Define route for register
 @app.route('/register')
@@ -208,6 +199,7 @@ def staffprofile():
 def staffregister():
 	return render_template("staffregister.html")
 
+'''
 
 if __name__ == "__main__": 
     app.run('127.0.0.1', 5000, debug= True )
