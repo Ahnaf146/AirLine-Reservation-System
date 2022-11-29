@@ -1,25 +1,22 @@
 from flask import Flask, render_template, request, session, url_for, redirect
-#from flask_mysqldb import MySQL
+import pymysql.cursors
+import mysql 
 
 app = Flask(__name__)
 
-'''
-app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = ''
-app.config['MYSQL_DB'] = 'flask'
-app.config['MYSQL_PORT'] = 3306
-
-mysql = MySQL(app)
-'''
-
+conn = pymysql.connect(host='localhost',
+                       user='root',
+                       password='root',
+                       db='Air Ticket Reservation System',
+                       charset='utf8mb4',
+					   port = 8889,
+                       cursorclass=pymysql.cursors.DictCursor)
 
 # mysql = MySQL(app)
 
 
 #Configure
-#  MySql
-'''
+#  MySql 
 
 @app.route('/login', methods = ['POST', 'GET'])
 def login():
@@ -29,7 +26,7 @@ def login():
 		name = request.form['name']
 		age = request.form['age']
 		cursor = mysql.connection.cursor()
-		cursor.execute(#INSERT INTO info_table VALUES(%s,%s),(name,age))
+		cursor.execute('INSERT INTO info_table VALUES(%s,%s),(name,age)')
 		mysql.connection.commit()
 		cursor.close()
 		return "success"
@@ -93,7 +90,7 @@ def registerAuth():
 def home():
     
     username = session['username']
-    cursor = conn.cursor();
+    cursor = conn.cursor()
     query = 'SELECT ts, blog_post FROM blog WHERE username = %s ORDER BY ts DESC'
     cursor.execute(query, (username))
     data1 = cursor.fetchall() 
@@ -106,7 +103,7 @@ def home():
 @app.route('/post', methods=['GET', 'POST'])
 def post():
 	username = session['username']
-	cursor = conn.cursor();
+	cursor = conn.cursor()
 	blog = request.form['blog']
 	query = 'INSERT INTO blog (blog_post, username) VALUES(%s, %s)'
 	cursor.execute(query, (blog, username))
@@ -118,20 +115,15 @@ def post():
 def logout():
 	session.pop('username')
 	return redirect('/')
+	
+'''
 
-
-@auth.route('/login', methods= ['GET', 'POST'])
+@app.route('/login', methods= ['GET', 'POST'])
 def login():
-
-@auth.route('/sign-up', methods= ['GET', 'POST'] 
+@app.route('/sign-up', methods= ['GET', 'POST'])
 def sign_up():
 	if request.method == "POST":
 		email = request.form.get('firstName')
-
-
-
-
-
 '''
 
 #Init 
@@ -169,7 +161,6 @@ def profile():
 
 @app.route('/statistics')
 def statistics():
-
 	return render_template("Statistics.html")
 
 @app.route('/payment', methods=['GET', 'POST'])
@@ -198,12 +189,9 @@ def payment():
 @app.route('/addinfo')
 def addinfo():
 	return render_template('AddInfo.html')
-
 @app.route('/bookflight')
 def bookflight():
 	username = session['username']
-
-
 	return render_template('BookFlight.html')
 
 #Adds confirmation page
@@ -211,10 +199,11 @@ def bookflight():
 def confirm():
 	return render_template('Finalize.html')
 
+#User authentification
 @app.route('/staffprofile')
 def staffprofile():
 	return render_template("staffprofile.html")
-
+#Register 
 @app.route('/staffregister')
 def staffregister():
 	return render_template("staffregister.html")
