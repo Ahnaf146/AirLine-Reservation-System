@@ -35,7 +35,7 @@ def home():
 	if "username" in session:
 		user = session["username"]
 		print("In-session")
-		return render_template('MyProfile.html', flights=data1, user=user)
+		return render_template('Payment.html', user=user)
 	else:
 		return render_template('HomePage.html', flights=data1)
 		
@@ -99,6 +99,52 @@ def profile():
 	return render_template("MyProfile.html", info = data1, user=user)
 
 
+#PAYMENT
+@app.route('/payment', methods=['GET', 'POST'])
+def payment():
+	username = session['username']
+	cursor = conn.cursor()
+	card_type = request.form.get('credit/debit')
+	card_num = request.form.get('card_num')
+	name_on_card = request.form.get('card_name')
+	exp_date = request.form.get('exp_date')
+	query = 'SELECT * FROM Ticket WHERE username = %s'
+	cursor.execute(query, (username))
+	data = cursor.fetchone()
+	if(data):
+		error = 'Payment information already exists'
+		return render_template('payment.html', error=error)
+	else:
+		new_info = 'INSERT INTO ticket VALUES(%s, %s, %s, %s)'
+		cursor.execute(new_info, (card_type, card_num, name_on_card, exp_date))
+		conn.commit()
+		cursor.close()
+	return render_template("Confirm.html", info = data, user=username)
+
+
+#PersonalInformation
+@app.route('/personalinfo')
+def bookflight():
+	username = session['username']
+	cursor = conn.cursor()
+	name = request.form.get('name')
+	building_num = request.form.get('building_num')
+	street = request.form.get('street')
+	city = request.form.get('State')
+	passport = request.form.get('passport')
+	query = 'Select Name, email, Password, building_num, street, City, State, passport from Customer'
+	cursor.execute(query)
+	data = cursor.fetchone()
+	if(data):
+		print("Information is correct")
+		conn.commit()
+		cursor.close()
+		return render_template('PersonalInfo.html', userinfo=data)
+
+	else:
+		error = "Personal information is incorrect. Doesn't match the user records"
+		return render_template("PersonalInfo.html", error=error)
+		
 
 
 '''
@@ -161,6 +207,7 @@ def registerAuth():
 		conn.commit()
 		cursor.close()
 		return render_template('MyProfile.html')
+
 @app.route('/home')
 def home():
     username = session['username']
@@ -246,15 +293,14 @@ def payment():
 @app.route('/addinfo')
 def addinfo():
 	return render_template('AddInfo.html')
-@app.route('/bookflight')
-def bookflight():
-	username = session['username']
-	return render_template('BookFlight.html')
+
 
 #Adds confirmation page
 @app.route('/confirm')
 def confirm():
-	return render_template('Finalize.html')
+	
+return render_template('Finalize.html')
+
 
 #User authentification
 @app.route('/staffprofile')
