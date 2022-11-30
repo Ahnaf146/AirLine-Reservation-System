@@ -5,7 +5,7 @@
 </head>
 <body>
     <form action= "/post" method= "POST">
-        <h1> Welcome {{first_name}} </h1>
+        <h1> Welcome {{user}} </h1>
     </form>
 
     <!-- Load up recent flight information Gather variables from app.py-->
@@ -20,6 +20,26 @@
 
     <div id= "content"> 
     <h1> Welcome to your profile. Check out all your confirmed flights and other information</h1>
+    <h1> Your flights </h1>
+
+    {% for line in info %}
+        <p> Ticket id: {{line['Ticket_id']}} </p>
+        <p> Flight number: {{line['flight_number']}}</p>
+        <p> Sold Price: {{line['sold_price']}}</p>
+
+
+    {%endfor%}
+
+    <h1> Your spending </h1>
+
+    <h1> Cancel trip </h1>
+
+
+    <h1> Give ratings </h1>
+
+
+
+
     </div>
     
 </body>

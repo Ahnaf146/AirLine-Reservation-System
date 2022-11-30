@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, session, url_for, redirect
 import pymysql.cursors
-import mysql 
+import mysql
 
 app = Flask(__name__)
 
@@ -9,7 +9,7 @@ conn = pymysql.connect(host='localhost',
                        password='root',
                        db='Air Ticket Reservation System',
                        charset='utf8mb4',
-					   port = 3306,
+					   port = 8889,
                        cursorclass=pymysql.cursors.DictCursor)
 
 # mysql = MySQL(app)
@@ -17,15 +17,14 @@ conn = pymysql.connect(host='localhost',
 app.secret_key="anystringhere"
 
 
-#Configure
-#  MySql 
-
+#HOME PAGE
+# Search for future flights based on source city/airport name, destination city/airport name, 
+# departure date for one way (departure and return dates for round trip)
 @app.route('/')
 #Home page: 
 	#Renders homepage with login and register functionality 
 	#Displays current and future flight times
 def home():
-	
 	cursor = conn.cursor()
 	query = 'SELECT * from Flight'
 	cursor.execute(query)
@@ -36,12 +35,72 @@ def home():
 	if "username" in session:
 		user = session["username"]
 		print("In-session")
-		return render_template('CustomerHomePage.html', flights=data1, user=user)
+		return render_template('MyProfile.html', flights=data1, user=user)
 	else:
 		return render_template('HomePage.html', flights=data1)
+		
+#LOGIN PAGE AND LOGOUT 
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+	#grabs information from the forms
+	if request.method == 'POST':
+		username = request.form['username']
+		password = request.form['password']
+		print('hello')
+		#cursor used to send queries
+		cursor = conn.cursor()
+		#executes query
+		query = 'SELECT * FROM customer WHERE email = %s and password = %s'
+		cursor.execute(query, (username, password))
+		#stores the results in a variable
+		data = cursor.fetchone()
+		#use fetchall() if you are expecting more than 1 data row
+		cursor.close()
+		print(data)
+		error = None
+		if(data):
+			#creates a session for the the user
+			#session is a built in
+			session['username'] = username
+			return redirect(url_for('home'))
+		else:
+			#returns an error message to the html page
+			error = 'Invalid login or username'
+			return render_template('Login.html', error=error)
+	else:
+		return render_template('Login.html')
 
-#  Search for future flights based on source city/airport name, destination city/airport name, 
-# departure date for one way (departure and return dates for round trip)
+@app.route('/logout')
+def logout():
+	session.pop('username')
+	return redirect('/')
+	
+
+#REGISTER FOR NEW USER
+
+
+
+
+#FLIGHT INFORMATION 
+
+
+#USER PROFILE
+@app.route('/profile')
+#Load up any flights where id is the same 
+#And display them 
+def profile():
+	user = session['username']
+	cursor = conn.cursor()
+	#Selects ticket information where username is same and orders it by time
+	query = 'SELECT Ticket_id, flight_number, sold_price FROM ticket NATURAL JOIN Customer WHERE Customer.EMAIL = %s AND Customer.EMAIL = ticket.EMAIL'
+	cursor.execute(query, (user))
+	data1 = cursor.fetchall()
+	cursor.close()
+	return render_template("MyProfile.html", info = data1, user=user)
+
+
+
+
 '''
 @app.route('/result', methods = ['POST', 'GET'])
 def future_flight():
@@ -71,39 +130,9 @@ def login():
 		return "success"
 	return render_template('Login.html')
 	
-'''
+
 
 #Authenticates the login
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-	#grabs information from the forms
-	if request.method == 'POST':
-		username = request.form['username']
-		password = request.form['password']
-		print('hello')
-		#cursor used to send queries
-		cursor = conn.cursor()
-		#executes query
-		query = 'SELECT * FROM customer WHERE email = %s and password = %s'
-		cursor.execute(query, (username, password))
-		#stores the results in a variable
-		data = cursor.fetchone()
-		#use fetchall() if you are expecting more than 1 data row
-		cursor.close()
-
-		print(data)
-		error = None
-		if(data):
-			#creates a session for the the user
-			#session is a built in
-			session['username'] = username
-			return redirect(url_for('home'))
-		else:
-			#returns an error message to the html page
-			error = 'Invalid login or username'
-			return render_template('login.html', error=error)
-	else:
-		return render_template('login.html')
 
 
 #Authenticates the register
@@ -132,7 +161,6 @@ def registerAuth():
 		conn.commit()
 		cursor.close()
 		return render_template('MyProfile.html')
-'''
 @app.route('/home')
 def home():
     username = session['username']
@@ -145,7 +173,8 @@ def home():
     cursor.close()
     return render_template('home.html', username=username, posts=data1)
 
-'''
+
+
 @app.route('/logout')
 def logout():
 	session.pop('username')
@@ -236,7 +265,7 @@ def staffprofile():
 def staffregister():
 	return render_template("staffregister.html")
 
-
+'''
 
 if __name__ == "__main__": 
     app.run('127.0.0.1', 5000, debug= True )
