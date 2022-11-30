@@ -146,12 +146,22 @@ def bookflight():
 		return render_template("PersonalInfo.html", error=error)
 
 
+
+#STAFF INFO 
+
+#STAFF profile
 @app.route('/staffprofile')
 def staffprofile():
-	return render_template("staffprofile.html")
+	username = session['username'] 
+	cursor = conn.cursor()
+	#Selects all of airline staff flights
+	query = 'SELECT * FROM FLIGHT NATURAL JOIN AirlineStaff WHERE AirlineStaff.Airline_name = Flight.Airline_name'
+	cursor.execute(query)
+	data1 = cursor.fetchall()
+	return render_template("staffprofile.html", staff_flight = data1)
 
-#Register 
-@app.route('/staffregister')
+#STAFF Register 
+@app.route('/staffregister', methods= ['GET', 'POST'])
 def staffregister():
 	name = request.form.get('name')
 	username = request.form.get('username')
@@ -173,6 +183,9 @@ def staffregister():
 		conn.commit()
 		cursor.close()
 		return render_template('staffprofile.html')
+
+
+		
 
 '''
 @app.route('/result', methods = ['POST', 'GET'])
