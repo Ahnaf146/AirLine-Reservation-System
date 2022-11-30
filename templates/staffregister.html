@@ -5,12 +5,18 @@
 </head>
 <body>
     <div>
-        <form action="/staffprofile">
-          <label for="name">First Name</label>
+        <h1> Register as a staff member </h1>
+
+        <form action="/staffregister" method="POST">
+          <label for="name">Name</label>
           <input type="text" id="name" name="name" placeholder="Name">
 
-          <label for="username">username</label>
+          <label for="username">Username</label>
           <input type="text" id="username" name="username" placeholder="Username">
+
+          <label for="password">Password</label>
+          <input type="text" id="username" name="username" placeholder="Password">
+
 
           <label for="dob">Date of Birth</label>
           <input type="text" id="dob" name="dob" placeholder="(MM/DD/YYYY)">
@@ -21,8 +27,9 @@
           <label for="Airline_name">Airline Name</label>
           <input type="text" id="Airline_name" name="Airline_name" placeholder="Airline Name">
 
-          <a href = "/staffprofile">
+          {% if error %}
           <input type="submit" value="Submit">
+          {%endif %}
           </a>
 
         </form>

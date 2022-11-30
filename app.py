@@ -35,7 +35,7 @@ def home():
 	if "username" in session:
 		user = session["username"]
 		print("In-session")
-		return render_template('Payment.html', user=user)
+		return render_template('CustomerHomePage.html', user=user)
 	else:
 		return render_template('HomePage.html', flights=data1)
 		
@@ -144,8 +144,35 @@ def bookflight():
 	else:
 		error = "Personal information is incorrect. Doesn't match the user records"
 		return render_template("PersonalInfo.html", error=error)
-		
 
+
+@app.route('/staffprofile')
+def staffprofile():
+	return render_template("staffprofile.html")
+
+#Register 
+@app.route('/staffregister')
+def staffregister():
+	name = request.form.get('name')
+	username = request.form.get('username')
+	password= request.form.get('password')
+	dob = request.form.get('dob')
+	phone_num = request.form.get('phone_num')
+	airline_name= request.form.get('Airline_name')
+	cursor = conn.cursor()
+	query = 'SELECT * from AirlineStaff WHERE Username= %s'
+	cursor.execute(query, (username))
+	data = cursor.fetchone()
+	error = None
+	if(data):
+		error = "This user already exists"
+		return render_template("staffregister.html", error=error)
+	else:
+		ins = 'INSERT INTO AirlineStaff VALUES(%s, %s, %s, %s, %d, %s)'
+		cursor.execute(ins, (username, password))
+		conn.commit()
+		cursor.close()
+		return render_template('staffprofile.html')
 
 '''
 @app.route('/result', methods = ['POST', 'GET'])
@@ -303,13 +330,6 @@ return render_template('Finalize.html')
 
 
 #User authentification
-@app.route('/staffprofile')
-def staffprofile():
-	return render_template("staffprofile.html")
-#Register 
-@app.route('/staffregister')
-def staffregister():
-	return render_template("staffregister.html")
 
 '''
 
