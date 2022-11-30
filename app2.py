@@ -7,7 +7,7 @@ app = Flask(__name__)
 conn = pymysql.connect(host='localhost',
                        user='root',
                        password='root',
-                       db='airticketreservation',
+                       db='Air Ticket Reservation System',
                        charset='utf8mb4',
 					   port = 8889,
                        cursorclass=pymysql.cursors.DictCursor)
@@ -15,10 +15,9 @@ conn = pymysql.connect(host='localhost',
 # mysql = MySQL(app)
 
 
-
-
 #Configure
 #  MySql 
+
 
 @app.route('/')
 #Home page: 
@@ -34,22 +33,6 @@ def home():
 	cursor.close()
 	return render_template('HomePage.html', flights=data1)
 
-#  Search for future flights based on source city/airport name, destination city/airport name, 
-# departure date for one way (departure and return dates for round trip)
-'''
-@app.route('/result', methods = ['POST', 'GET'])
-def future_flight():
-		cursor = conn.cursor()
-		if request.method == 'POST':
-    			future_flight = request.form
-				leaving = future_flight['Leaving From']
-				going =  future_flight['Going To']
-				cursor.execute(SELECT Departure_date from Flight WHERE Departure_date > time )
-				r=cursor.fetchone()
-				conn.commit()
-				cursor.close()
-				return render_template ("HomePage.html", r=r)
-'''
 
 '''
 
