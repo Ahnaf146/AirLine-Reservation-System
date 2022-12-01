@@ -71,33 +71,38 @@ def login():
 	else:
 		return render_template('Login.html')
 
-
+#STAFF LOGIN PAGE 
+@app.route('/loginstaff', methods= ['GET', 'POST'])
+def staff_login():
+	if request.method == "POST":
+		username = request.form.get('username')
+		password = request.form.get('password')
+		cursor = conn.cursor()
+		#executes query
+		query = "SELECT * FROM login_data WHERE username=%s and password=%s AND CUSTOMER UNLIKE '%@%'"
+		cursor.execute(query)
+		#stores the results in a variable
+		data = cursor.fetchone()
+		#use fetchall() if you are expecting more than 1 data row
+		cursor.close()
+		error = None
+		if(data):
+			session['username'] = username
+			return redirect(url_for('home'))
+		else:
+		#returns an error message to the html page
+			error = 'Invalid login or username'
+			return render_template('StaffLogin.html', user=username, error=error)
+	else:
+		return render_template("StaffLogin.html")
+	
+	
 @app.route('/logout')
 def logout():
 	session.pop('username')
 	return redirect('/')
 
-#STAFF LOGIN PAGE 
-@app.route('/loginstaff', methods= ['GET', 'POST'])
-def staff_login():
-	username = request.form.get('username')
-	password = request.form.get('password')
-	cursor = conn.cursor()
-	#executes query
-	query = 'SELECT * FROM login_data WHERE username=%s and password=%s'
-	cursor.execute(query)
-	#stores the results in a variable
-	data = cursor.fetchone()
-	#use fetchall() if you are expecting more than 1 data row
-	cursor.close()
-	error = None
-	if(data):
-		session['username'] = username
-		return redirect(url_for('home'))
-	else:
-		#returns an error message to the html page
-		error = 'Invalid login or username'
-		return render_template('StaffLogin.html', error=error)
+
 
 #REGISTER FOR NEW USER
 
@@ -142,7 +147,7 @@ def payment():
 		cursor.execute(new_info, (card_type, card_num, name_on_card, exp_date))
 		conn.commit()
 		cursor.close()
-	return render_template("Confirm.html", info = data, user=username)
+	return render_template("Confirm.html", info = data, username=username)
 
 
 #PersonalInformation
@@ -178,7 +183,7 @@ def staffprofile():
 	query = 'SELECT * FROM FLIGHT NATURAL JOIN AirlineStaff WHERE AirlineStaff.Airline_name = Flight.Airline_name'
 	cursor.execute(query)
 	data1 = cursor.fetchall()
-	return render_template("staffprofile.html", staff_flight = data1)
+	return render_template("staffprofile.html")
 
 #STAFF Register 
 @app.route('/staffregister', methods= ['GET', 'POST'])
