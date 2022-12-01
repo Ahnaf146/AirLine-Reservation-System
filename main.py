@@ -9,7 +9,7 @@ conn = pymysql.connect(host='localhost',
                        password='root',
                        db='Air Ticket Reservation System',
                        charset='utf8mb4',
-					   port = 8888,
+					   port = 8889,
                        cursorclass=pymysql.cursors.DictCursor)
 
 # mysql = MySQL(app)
@@ -38,8 +38,9 @@ def home():
 		return render_template('CustomerHomePage.html', user=user)
 	else:
 		return render_template('HomePage.html', flights=data1)
-		
-#LOGIN PAGE AND LOGOUT 
+	
+
+#CUSTOMER LOGIN PAGE AND LOGOUT 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
 	#grabs information from the forms
@@ -70,11 +71,33 @@ def login():
 	else:
 		return render_template('Login.html')
 
+
 @app.route('/logout')
 def logout():
 	session.pop('username')
 	return redirect('/')
-	
+
+#STAFF LOGIN PAGE 
+@app.route('/loginstaff', methods= ['GET', 'POST'])
+def staff_login():
+	username = request.form.get('username')
+	password = request.form.get('password')
+	cursor = conn.cursor()
+	#executes query
+	query = 'SELECT * FROM login_data WHERE username=%s and password=%s'
+	cursor.execute(query)
+	#stores the results in a variable
+	data = cursor.fetchone()
+	#use fetchall() if you are expecting more than 1 data row
+	cursor.close()
+	error = None
+	if(data):
+		session['username'] = username
+		return redirect(url_for('home'))
+	else:
+		#returns an error message to the html page
+		error = 'Invalid login or username'
+		return render_template('StaffLogin.html', error=error)
 
 #REGISTER FOR NEW USER
 
@@ -140,14 +163,11 @@ def bookflight():
 		conn.commit()
 		cursor.close()
 		return render_template('PersonalInfo.html', userinfo=data)
-
 	else:
 		error = "Personal information is incorrect. Doesn't match the user records"
 		return render_template("PersonalInfo.html", error=error)
-
-
-
 #STAFF INFO 
+
 
 #STAFF profile
 @app.route('/staffprofile')
@@ -184,10 +204,10 @@ def staffregister():
 		cursor.close()
 		return render_template('staffprofile.html')
 
-
 		
 
 '''
+#Future Flights
 @app.route('/result', methods = ['POST', 'GET'])
 def future_flight():
 		cursor = conn.cursor()
@@ -203,27 +223,9 @@ def future_flight():
 
 
 
-
-@app.route('/login', methods = ['POST', 'GET'])
-def login():
-	if request.method == 'POST':
-		username = request.form['username']
-		password = request.form['password']
-		cursor = mysql.connection.cursor()
-		cursor.execute('INSERT INTO info_table VALUES(%s,%s),(name,age)')
-		mysql.connection.commit()
-		cursor.close()
-		return "success"
-	return render_template('Login.html')
-	
-
-
-#Authenticates the login
-
-
 #Authenticates the register
-@app.route('/registerAuth', methods=['GET', 'POST'])
-def registerAuth():
+@app.route('/register', methods=['GET', 'POST'])
+def register():
 	#grabs information from the forms
 	username = request.form['username']
 	password = request.form['password']
@@ -248,6 +250,7 @@ def registerAuth():
 		cursor.close()
 		return render_template('MyProfile.html')
 
+
 @app.route('/home')
 def home():
     username = session['username']
@@ -261,28 +264,10 @@ def home():
     return render_template('home.html', username=username, posts=data1)
 
 
-
 @app.route('/logout')
 def logout():
 	session.pop('username')
 	return redirect('/')
-
-
-@app.route('/sign-up', methods= ['GET', 'POST'])
-def sign_up():
-	if request.method == "POST":
-		email = request.form.get('firstName')
-#Init 
-@app.route('/')
-def hello():
-    return render_template('HomePage.html')
-#Define route for login
-
-
-
-# @app.route('/login')
-# def login():
-# 	return render_template('Login.html')
 
 
 #Define route for register
