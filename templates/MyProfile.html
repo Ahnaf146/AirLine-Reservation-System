@@ -4,19 +4,21 @@
     <link rel= "stylesheet" href = "{{ url_for('static', filename='css/profile.css')}}">
 </head>
 <body>
-    <form action= "/post" method= "POST">
-        <h1> Welcome {{user}} </h1>
-    </form>
-
-    <!-- Load up recent flight information Gather variables from app.py-->
-    
-    <!-- Nav header bar-->
     <ul>
         <li> My Flights </li>
         <li> Previous Flights </li>
         <li> Spending </li>
         <li> Logout </li>
     </ul>
+
+
+    <form action= "/post" method= "POST">
+        <h1>  Welcome {{user}} </h1>
+    </form>
+
+    <!-- Load up recent flight information Gather variables from app.py-->
+    
+    <!-- Nav header bar-->
 
     <div id= "content"> 
     <h1> Welcome to your profile. Check out all your confirmed flights and other information</h1>

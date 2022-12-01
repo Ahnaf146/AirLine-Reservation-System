@@ -211,6 +211,18 @@ def staffregister():
 
 		
 
+#Adds the flight,airport, and airplane
+@app.route('/addinfo')
+def addinfo():
+	username = session['username']
+	cursor = conn.cursor()
+	#Select current flights 
+	query = 'SELECT *from Flight' 
+	cursor.execute(query)
+	data = cursor.fetchone()
+	return render_template('AddInfo.html', data=flight_info)
+
+
 '''
 #Future Flights
 @app.route('/result', methods = ['POST', 'GET'])
