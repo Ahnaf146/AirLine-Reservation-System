@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel= "stylesheet" href = "{{ url_for('static', filename='css/main.css')}}">
+
+
+</head>
+<body>
+    <!-- 
+        
+        Navbar 
+    -->
+    
+    <ul>
+        <li> <a> {{user}} </a></li>
+        <li style="float:right"> <a href = "/logout"> Logout </a> </li>
+
+    </ul>
+    
+
+
+
+
+    <div id = "welcome">
+        <h2> Welcome to AirlineReservation Inc.,  {{user}}</h2>
+        <a href= "/profile">
+        <button type="submit" form="form" value="Submit">View your profile</button>
+        </a>
+
+        
+        <h3> Search for your next flight</h3>
+
+        <form action = " http://127.0.0.1:5000/result" method = "POST">
+            <p> Leaving From: <input type = "text" name = "Leaving From" /></p>
+            <p> Going To: <input type = "text" name = " Going To" /></p>
+            <label for="Departing">Departing:</label>
+            <input type="date" id="Departing" name="Departing">
+            <label for="Returning">Returning:</label>
+            <input type="date" id="Returning" name="Returning">
+            <p><input type="submit" value="Submit" </p>
+            
+
+
+
+        </form>
+
+        <a href= "/addinfo">
+            <button type="button" id = "homepage_button">Click here to book a flight</button> 
+        </a>
+
+        <br> </br>
+
+        <h1> Announcements </h1>
+        <h1> Incoming flights  </h1>
+        <table>
+            <th>Flight Number</th>
+            <th>Departure Airport</th>
+            <th>Departure_date</th>
+            <th>Arrival Airport</th>
+            <th>Arrival Time</th>
+            <th>Destination</th>
+            <th>Flight status </th>
+        {% for line in flights%}
+            <tr>
+                <td>{{line['flight_number']}}</td>
+                <td>{{line['Departure_airport']}}</td>
+                <td>{{line['Departure_date']}}</td>
+                <td>{{line['Arrival_airport']}}</td>
+                <td>{{line['Arrival_time']}}</td>
+                <td>{{line['Destination']}}</td>
+                <td>{{line['flight_status']}}</td>
+            </tr>
+            {%endfor %}
+        </table>
+        <iframe src="https://giphy.com/embed/fZ3O6dlqnN52aZnlYQ" width="480" height="480" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/stickers/ciamaritimabeachwear-transparent-ciamaritima-garotasmaritima-fZ3O6dlqnN52aZnlYQ"></a></p>
+
+
+    </div>
+    
+    <!-- Footer -->
+
+</body>
+</html>

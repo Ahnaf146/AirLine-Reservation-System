@@ -32,10 +32,14 @@ def home():
 	for each in data1:
 		print(each['flight_number'])
 	cursor.close()
-	if "username" in session:
-		user = session["username"]
-		print("In-session")
-		return render_template('CustomerHomePage.html', user=user)
+	if "customer" in session:
+		user = session["customer"]
+		print("In-session customer")
+		return render_template('CustomerHomePage.html', user=user , flights=data1)
+	if "staff" in session:
+		user = session["staff"]
+		print("In-session staff")
+		return render_template('StaffHomePage.html', user=user , flights=data1)
 	else:
 		return render_template('HomePage.html', flights=data1)
 	
@@ -62,7 +66,7 @@ def login():
 		if(data):
 			#creates a session for the the user
 			#session is a built in
-			session['username'] = username
+			session['customer'] = username
 			return redirect(url_for('home'))
 		else:
 			#returns an error message to the html page
@@ -87,7 +91,7 @@ def staff_login():
 		cursor.close()
 		error = None
 		if(data):
-			session['username'] = username
+			session['staff'] = username
 			return redirect(url_for('home'))
 		else:
 		#returns an error message to the html page
@@ -99,7 +103,10 @@ def staff_login():
 	
 @app.route('/logout')
 def logout():
-	session.pop('username')
+	if "customer" in session:
+		session.pop('customer')
+	if "staff" in session:
+		session.pop('staff')
 	return redirect('/')
 
 
