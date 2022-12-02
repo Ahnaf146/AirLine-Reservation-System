@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Document</title>
+    <link rel= "stylesheet" href = "{{ url_for('static', filename='css/main.css')}}">
 </head>
 <body>
     <!-- Soon extract the available flight times from sql database with option and fill in with python-->
@@ -9,10 +9,9 @@
     <form action='POST'> 
         <label for="Flight_time">Flight </label>
             <select name = "flights" id="Flight_time">
-                {%for line in flight_info%}
-                <option value="input"> {{line['Departure_date']}}</option>
-                <p> {{line['Departure_date']}} </p>
-                {%endfor %}
+                {% for line in flight_info %}
+                    <p> {{line['Departure_date']}} </p>
+                {% endfor %}
             </select>
 
             <input type="submit" value="Submit"/> 
@@ -43,7 +42,7 @@
     <h1> Total Price: </h1>
     <br> 
 
-    <a href = "/bookflight">
+    <a href = "/personalinfo">
     <button class="button">Continue!</button>
     </a>
     </br>

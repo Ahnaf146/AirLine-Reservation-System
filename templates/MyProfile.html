@@ -1,17 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel= "stylesheet" href = "{{ url_for('static', filename='css/profile.css')}}">
+    <link rel= "stylesheet" href = "{{ url_for('static', filename='css/main.css')}}">
 </head>
 <body>
     <ul>
-        <li> My Flights </li>
-        <li> Previous Flights </li>
-        <li> Spending </li>
-        <li> Logout </li>
+        <li> <a> {{user}} </a></li>
+        <li style="float:right"> <a href = "/logout"> Logout </a> </li>
+
     </ul>
-
-
+    
     <form action= "/post" method= "POST">
         <h1>  Welcome {{user}} </h1>
     </form>

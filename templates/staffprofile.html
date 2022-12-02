@@ -1,10 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title> Document </title>
+    <link rel= "stylesheet" href = "{{ url_for('static', filename='css/main.css')}}">
 </head>
 <body>
-    <h1> Welcome to the staff profile</h1>
+    <ul>
+        <li> <a> {{staffuser}} </a></li>
+        <li style="float:right"> <a href = "/logout"> Logout </a> </li>
+
+    </ul>
+
+    <h1> Welcome to the staff profile {{staffuser}} </h1>
 
     <h1> View your scheduled flights</h1>
     {% for line in staff_flights%}

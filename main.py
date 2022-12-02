@@ -171,7 +171,7 @@ def bookflight():
 	street = request.form.get('street')
 	city = request.form.get('State')
 	passport = request.form.get('passport')
-	query = 'Select * from Customer WHERE email = %s'
+	query = 'Select * from Customer'
 	cursor.execute(query)
 	data = cursor.fetchone()
 	print(data)
@@ -195,8 +195,7 @@ def staffprofile():
 	query = 'SELECT * FROM FLIGHT NATURAL JOIN AirlineStaff WHERE AirlineStaff.Airline_name = Flight.Airline_name'
 	cursor.execute(query)
 	data1 = cursor.fetchall()
-	print(data1)
-	return render_template("staffprofile.html", staff_flights=data1)
+	return render_template("staffprofile.html", staffuser = username, staff_flights=data1)
 
 #STAFF Register 
 @app.route('/staffregister', methods= ['GET', 'POST'])
@@ -230,7 +229,7 @@ def addinfo():
 	username = session['username']
 	cursor = conn.cursor()
 	#Select current flights 
-	query = 'SELECT *from Flight' 
+	query = 'SELECT * from Flight' 
 	cursor.execute(query)
 	data = cursor.fetchone()
 	print(data)
