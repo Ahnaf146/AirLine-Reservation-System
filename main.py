@@ -210,12 +210,14 @@ def addinfo():
 	data = cursor.fetchone()
 	print(data)
 	return render_template('AddInfo.html', user=username, flight_info=data)
+	#Functionality for customer choosing flight
+	# if (yes):
+	# 	query= 'INSERT into Ticket %s %s %s %s'
 
 #PersonalInformation
 @app.route('/personalinfo', methods = ["POST", "GET"])
 def bookflight():
 	username = session['username']
-	print(username)
 	cursor = conn.cursor()
 	name = request.form.get('name')
 	building_num = request.form.get('building_num')

@@ -14,22 +14,22 @@
     <div>
         <form action="/payment" method= "POST">
           <label for="fname">Name</label>
-          <input type="text" id="name" name="name" placeholder=" Name">
+          <input type="text" id="name" name="name" placeholder=" Name" required>
 
           <label for="building_num">Building number</label>
-          <input type="text" id="building_num" name="building_num" placeholder="Building Number">
+          <input type="text" id="building_num" name="building_num" placeholder="Building Number" required>
 
           <label for="street">Street</label>
-          <input type="text" id="street" name="street" placeholder="Street">
+          <input type="text" id="street" name="street" placeholder="Street" required>
 
           <label for="city">City</label>
-          <input type="text" id="city" name="city" placeholder="city">
+          <input type="text" id="city" name="city" placeholder="city" required>
 
           <label for="State">State</label>
-          <input type="text" id="State" name="State" placeholder="State">
+          <input type="text" id="State" name="State" placeholder="State" required>
           
           <label for="passport">Passport</label>
-          <input type="text" id="passport" name="passport" placeholder="passport">
+          <input type="text" id="passport" name="passport" placeholder="passport" required>
           {% if error %}
             <h1> ERROR: {{error}} </h1>
          {% endif %}

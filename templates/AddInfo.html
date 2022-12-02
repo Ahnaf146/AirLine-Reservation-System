@@ -7,44 +7,57 @@
     <ul>
         <li> <a> {{user}} </a></li>
         <li style="float:right"> <a href = "/logout"> Logout </a> </li>
+    
 
     </ul>
+
     <!-- Soon extract the available flight times from sql database with option and fill in with python-->
-    <h1> Add flight </h1>
+    <h1> Choose departure date</h1>
     <form action='POST'> 
         <label for="Flight_time">Flight </label>
             <select name = "flights" id="Flight_time">
-                {% for line in flight_info %}
-                    <p> {{line['Departure_date']}} </p>
-                {% endfor %}
+                <option value= "Time"> {{flight_info['Departure_date']}}</option>
+            </select>
+            <input type="submit" value="Submit"/> 
+    </form>
+    <h1> Choose arrival date</h1>
+    <form action='POST'> 
+        <label for="Flight_time">Flight </label>
+            <select name = "flights" id="Flight_time">
+                <option value= "Time"> {{flight_info['Arrival_date']}}</option>
+            </select>
+            <input type="submit" value="Submit"/> 
+    </form>
+    <h1> Choose Destination </h1>
+    <form action='POST'> 
+        <label for="Flight_time">Flight </label>
+            <select name = "flights" id="Flight_time">
+                <option value= "Time"> {{flight_info['Destination']}}</option>
             </select>
 
             <input type="submit" value="Submit"/> 
     </form>
 
-    <h1> Add Airplane </h1>
+    <h1> Choose Airport </h1>
     <form action="POST">
-        <label for ="Airplane"> Airplane </label> 
+        <label for ="Airplane"> Airport </label> 
         <select name = "Airplane" id="Flight_time">
-            <option value="Airplane_1"> Jet Blue</option>
-            <option value="Airplane_2"> Boeing749</option>
-            <option value="Airplane_3"> Boeing750</option>
+            <option value="Airplane"> {{flight_info['Departure_airport']}} </option>
         </select>
         <input type="submit" value="Submit"/> 
     </form>
 
-    <h1> Add Airport </h1>
+    <h1> Add Airline </h1>
     <form action = "POST">
         <label for ="Airport"> Airport </label> 
         <select name = "Airplane" id="Flight_time">
-            <option value="Airport1"> JFK</option>
-            <option value="Airport2"> PVG</option>
+            <option value="Airline1"> {{flight_info['Airline_name']}} </option>
         </select>
         <input type="submit" value="Submit"/> 
     </form>
+     
 
-
-    <h1> Total Price: </h1>
+    <h1> Total Price: ${{flight_info['Base_Price']}}</h1>
     <br> 
 
     <a href = "/personalinfo">
