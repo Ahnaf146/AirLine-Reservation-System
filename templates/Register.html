@@ -1,22 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel= "stylesheet" href = "{{ url_for('static', filename='css/login.css')}}">
+    <link rel= "stylesheet" href = "{{url_for('static', filename='css/login.css')}}">
 </head>
 <body>
     <a href = "/staffregister"> 
-    <button>Register for airline staff</button>
+    <button>Register for Airline Staff</button>
     </a>
-    <h1 style= "text-align:center">Register to use our platform</h1>
+    <h1 style= "text-align:center">Customer Registration</h1>
 
     <div>
         <form action="/payment">
-          <label for="fname">First Name</label>
-          <input type="text" id="fname" name="firstname" placeholder="First Name">
+          <label for="name">Name</label>
+          <input type="text" id="name" name="name" placeholder="Enter Full Name">
       
-          <label for="lname">Last Name</label>
-          <input type="text" id="lname" name="lastname" placeholder="Last Name">
-
           <label for="building_num">Building number</label>
           <input type="text" id="building_num" name="building_num" placeholder="Building Number">
 
@@ -31,6 +28,12 @@
           
           <label for="passport">passport</label>
           <input type="text" id="passport" name="passport" placeholder="passport">
+
+          <label for="email">Email</label>
+          <input type="text" id="email" name="email" placeholder="Enter Email">
+
+          <label for="password">Password</label>
+          <input type="text" id="password" name="password" placeholder="Enter a new password">
 
           <a href = "/profile">
           <input type="submit" value="Submit">

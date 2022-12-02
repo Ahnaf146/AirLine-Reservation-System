@@ -32,14 +32,18 @@ def home():
 	for each in data1:
 		print(each['flight_number'])
 	cursor.close()
-	if "username" in session:
-		user = session["username"]
-		print("In-session")
-		return render_template('CustomerHomePage.html', user=user)
+	if "customer" in session:
+		user = session["customer"]
+		print("In-session customer")
+		return render_template('CustomerHomePage.html', user=user , flights=data1)
+	if "staff" in session:
+		user = session["staff"]
+		print("In-session staff")
+		return render_template('StaffHomePage.html', user=user , flights=data1)
 	else:
 		return render_template('HomePage.html', flights=data1)
-		
-#LOGIN PAGE AND LOGOUT 
+	
+#CUSTOMER LOGIN PAGE AND LOGOUT 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
 	#grabs information from the forms
@@ -61,7 +65,7 @@ def login():
 		if(data):
 			#creates a session for the the user
 			#session is a built in
-			session['username'] = username
+			session['customer'] = username
 			return redirect(url_for('home'))
 		else:
 			#returns an error message to the html page
@@ -70,11 +74,41 @@ def login():
 	else:
 		return render_template('Login.html')
 
+#STAFF LOGIN PAGE 
+@app.route('/loginstaff', methods= ['GET', 'POST'])
+def staff_login():
+	if request.method == "POST":
+		username = request.form.get('username')
+		password = request.form.get('password')
+		cursor = conn.cursor()
+		#executes query
+		query = "SELECT * FROM airlinestaff WHERE Username=%s and Password=%s"
+		cursor.execute(query,(username, password))
+		#stores the results in a variable
+		data = cursor.fetchone()
+		#use fetchall() if you are expecting more than 1 data row
+		cursor.close()
+		error = None
+		if(data):
+			session['staff'] = username
+			return redirect(url_for('home'))
+		else:
+		#returns an error message to the html page
+			error = 'Invalid login or username'
+			return render_template('StaffLogin.html', user=username, error=error)
+	else:
+		return render_template("StaffLogin.html")
+
+
 @app.route('/logout')
 def logout():
-	session.pop('username')
+	if "customer" in session:
+		session.pop('customer')
+	if "staff" in session:
+		session.pop('staff')
 	return redirect('/')
-	
+
+
 
 #REGISTER FOR NEW USER
 
@@ -99,66 +133,20 @@ def profile():
 	return render_template("MyProfile.html", info = data1, user=user)
 
 
-#PAYMENT
-@app.route('/payment', methods=['GET', 'POST'])
-def payment():
-	username = session['username']
-	cursor = conn.cursor()
-	card_type = request.form.get('credit/debit')
-	card_num = request.form.get('card_num')
-	name_on_card = request.form.get('card_name')
-	exp_date = request.form.get('exp_date')
-	query = 'SELECT * FROM Ticket WHERE username = %s'
-	cursor.execute(query, (username))
-	data = cursor.fetchone()
-	if(data):
-		error = 'Payment information already exists'
-		return render_template('payment.html', error=error)
-	else:
-		new_info = 'INSERT INTO ticket VALUES(%s, %s, %s, %s)'
-		cursor.execute(new_info, (card_type, card_num, name_on_card, exp_date))
-		conn.commit()
-		cursor.close()
-	return render_template("Confirm.html", info = data, user=username)
-
-
-#PersonalInformation
-@app.route('/personalinfo')
-def bookflight():
-	username = session['username']
-	cursor = conn.cursor()
-	name = request.form.get('name')
-	building_num = request.form.get('building_num')
-	street = request.form.get('street')
-	city = request.form.get('State')
-	passport = request.form.get('passport')
-	query = 'Select Name, email, Password, building_num, street, City, State, passport from Customer'
-	cursor.execute(query)
-	data = cursor.fetchone()
-	if(data):
-		print("Information is correct")
-		conn.commit()
-		cursor.close()
-		return render_template('PersonalInfo.html', userinfo=data)
-
-	else:
-		error = "Personal information is incorrect. Doesn't match the user records"
-		return render_template("PersonalInfo.html", error=error)
-
-
 
 #STAFF INFO 
+
 
 #STAFF profile
 @app.route('/staffprofile')
 def staffprofile():
-	username = session['username'] 
+	username = session['staff'] 
 	cursor = conn.cursor()
 	#Selects all of airline staff flights
 	query = 'SELECT * FROM FLIGHT NATURAL JOIN AirlineStaff WHERE AirlineStaff.Airline_name = Flight.Airline_name'
 	cursor.execute(query)
 	data1 = cursor.fetchall()
-	return render_template("staffprofile.html", staff_flight = data1)
+	return render_template("staffprofile.html", staffuser = username, staff_flights=data1)
 
 #STAFF Register 
 @app.route('/staffregister', methods= ['GET', 'POST'])
@@ -184,215 +172,96 @@ def staffregister():
 		cursor.close()
 		return render_template('staffprofile.html')
 
-#Define route for register
-@app.route('/register')
-def register():
-	return render_template('Register.html')
 
 
-@app.route('/loginstaff', methods= ['GET', 'POST'])
-def staff_login():
-	if request.method == "POST":
-		username = request.form.get('username')
-		password = request.form.get('password')
-		cursor = conn.cursor()
-		#executes query
-		query = "SELECT * FROM login_data WHERE username=%s and password=%s AND CUSTOMER UNLIKE '%@%'"
-		cursor.execute(query)
-		#stores the results in a variable
-		data = cursor.fetchone()
-		#use fetchall() if you are expecting more than 1 data row
-		cursor.close()
-		error = None
-		if(data):
-			session['username'] = username
-			return redirect(url_for('home'))
-		else:
-		#returns an error message to the html page
-			error = 'Invalid login or username'
-			return render_template('StaffLogin.html', user=username, error=error)
-	else:
-		return render_template("StaffLogin.html")
-		
-@app.route('/registerAuth', methods=['GET', 'POST'])
-def registerAuth():
-	#grabs information from the forms
-	username = request.form['username']
-	password = request.form['password']
-
-	#cursor used to send queries
-	cursor = conn.cursor()
-	#executes query
-	query = 'SELECT * FROM user WHERE username = %s'
-	cursor.execute(query, (username))
-	#stores the results in a variable
-	data = cursor.fetchone()
-	#use fetchall() if you are expecting more than 1 data row
-	error = None
-	if(data):
-		#If the previous query returns data, then user exists
-		error = "This user already exists"
-		return render_template('register.html', error = error)
-	else:
-		ins = 'INSERT INTO user VALUES(%s, %s)'
-		cursor.execute(ins, (username, password))
-		conn.commit()
-		cursor.close()
-		return render_template('MyProfile.html')
-
-'''
-@app.route('/result', methods = ['POST', 'GET'])
-def future_flight():
-		cursor = conn.cursor()
-		if request.method == 'POST':
-    			future_flight = request.form
-				leaving = future_flight['Leaving From']
-				going =  future_flight['Going To']
-				cursor.execute(SELECT Departure_date from Flight WHERE Departure_date > time )
-				r=cursor.fetchone()
-				conn.commit()
-				cursor.close()
-				return render_template ("HomePage.html", r=r)
-
-
-
-
-@app.route('/login', methods = ['POST', 'GET'])
-def login():
-	if request.method == 'POST':
-		username = request.form['username']
-		password = request.form['password']
-		cursor = mysql.connection.cursor()
-		cursor.execute('INSERT INTO info_table VALUES(%s,%s),(name,age)')
-		mysql.connection.commit()
-		cursor.close()
-		return "success"
-	return render_template('Login.html')
-	
-
-
-#Authenticates the login
-
-
-#Authenticates the register
-@app.route('/registerAuth', methods=['GET', 'POST'])
-def registerAuth():
-	#grabs information from the forms
-	username = request.form['username']
-	password = request.form['password']
-
-	#cursor used to send queries
-	cursor = conn.cursor()
-	#executes query
-	query = 'SELECT * FROM user WHERE username = %s'
-	cursor.execute(query, (username))
-	#stores the results in a variable
-	data = cursor.fetchone()
-	#use fetchall() if you are expecting more than 1 data row
-	error = None
-	if(data):
-		#If the previous query returns data, then user exists
-		error = "This user already exists"
-		return render_template('register.html', error = error)
-	else:
-		ins = 'INSERT INTO user VALUES(%s, %s)'
-		cursor.execute(ins, (username, password))
-		conn.commit()
-		cursor.close()
-		return render_template('MyProfile.html')
-
-@app.route('/home')
-def home():
-    username = session['username']
-    cursor = conn.cursor()
-    query = 'SELECT ts, blog_post FROM blog WHERE username = %s ORDER BY ts DESC'
-    cursor.execute(query, (username))
-    data1 = cursor.fetchall() 
-    for each in data1:
-        print(each['blog_post'])
-    cursor.close()
-    return render_template('home.html', username=username, posts=data1)
-
-
-
-@app.route('/logout')
-def logout():
-	session.pop('username')
-	return redirect('/')
-
-
-@app.route('/sign-up', methods= ['GET', 'POST'])
-def sign_up():
-	if request.method == "POST":
-		email = request.form.get('firstName')
-#Init 
-@app.route('/')
-def hello():
-    return render_template('HomePage.html')
-#Define route for login
-
-
-
-# @app.route('/login')
-# def login():
-# 	return render_template('Login.html')
-
-
-@app.route('/profile')
-#Load up any flights where id is the same 
-#And display them 
-def profile():
+#Adds the flight,airport, and airplane
+@app.route('/addinfo')
+def addinfo():
 	username = session['username']
 	cursor = conn.cursor()
-	#Selects ticket information where username is same and orders it by time
-	query = 'SELECT Ticket_id, flight_number, sold_price FROM ticket WHERE username = %s ORDER by date, time desc'
-	cursor.execute(query, (username))
-	data1 = cursor.fetchall()
-	cursor.close()
-	return render_template("MyProfile.html")
+	#Select current flights 
+	query = 'SELECT * from Flight' 
+	cursor.execute(query)
+	data = cursor.fetchone()
+	print(data)
+	return render_template('AddInfo.html', user=username, flight_info=data)
 
-@app.route('/statistics')
-def statistics():
-	return render_template("Statistics.html")
+#PersonalInformation
+@app.route('/personalinfo', methods = ["POST", "GET"])
+def bookflight():
+	username = session['username']
+	print(username)
+	cursor = conn.cursor()
+	name = request.form.get('name')
+	building_num = request.form.get('building_num')
+	street = request.form.get('street')
+	city = request.form.get('State')
+	passport = request.form.get('passport')
+	query = 'Select * from Customer'
+	cursor.execute(query)
+	data = cursor.fetchone()
+	print(data)
+	if(data):
+		print("Information is correct")
+		conn.commit()
+		cursor.close()
+		return render_template('PersonalInfo.html', userinfo=data)
+	else:
+		error = "Personal information is incorrect. Doesn't match the user records"
+		return render_template("PersonalInfo.html", user = username, error=error)
 
+#PAYMENT
 @app.route('/payment', methods=['GET', 'POST'])
 def payment():
 	username = session['username']
+	print(username)
 	cursor = conn.cursor()
-	card_type = request.form['credit/debit']
-	card_num = request.form['card_num']
-	name_on_card = request.form['card_name']
-	exp_date = request.form['exp_date']
-	query = 'SELECT * FROM Ticket WHERE username = %s'
+	card_type = request.form.get('credit/debit')
+	card_num = request.form.get('card_num')
+	name_on_card = request.form.get('card_name')
+	exp_date = request.form.get('exp_date')
+	query = 'SELECT * FROM Ticket WHERE Email = %s'
 	cursor.execute(query, (username))
 	data = cursor.fetchone()
-
+	print(data)
+	error = None
 	if(data):
 		error = 'Payment information already exists'
-		return render_template('payment.html', error=error)
+		return render_template('Payment.html', error=error)
 	else:
 		new_info = 'INSERT INTO ticket VALUES(%s, %s, %s, %s)'
 		cursor.execute(new_info, (card_type, card_num, name_on_card, exp_date))
 		conn.commit()
 		cursor.close()
-	return render_template("Payment.html")
-
-#Adds the flight,airport, and airplane
-@app.route('/addinfo')
-def addinfo():
-	return render_template('AddInfo.html')
+	return render_template("Confirm.html", info = data, user=username, error=error)
+	# return render_template('Register.html')
 
 
-#Adds confirmation page
+# @app.route('/register')
+# def register():
+# 	return render_template('Register.html')
+
+#Confirmation page for information
+#Update the profile with the information
 @app.route('/confirm')
 def confirm():
-	
-return render_template('Finalize.html')
+	username = session['username']
+	#Extract information from addinfo
+	#Arrange it using html
+	return render_template('Finalize.html', user=username)
 
 
-#User authentification
+@app.route('/register', methods = ["GET", "POST"])
+def register():
+	# if request.method == "POST":
+	# 	name = request.form.get("")
+	return render_template('Register.html')
 
-'''
+
+# @app.route('/staffregister')
+# def register():
+# 	return render_template('staffregister.html')
+
 
 if __name__ == "__main__": 
     app.run('127.0.0.1', 5000, debug= True )
