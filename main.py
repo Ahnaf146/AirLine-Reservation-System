@@ -9,7 +9,7 @@ conn = pymysql.connect(host='localhost',
                        password='root',
                        db='Air Ticket Reservation System',
                        charset='utf8mb4',
-					   port = 3306,
+					   port = 8889,
                        cursorclass=pymysql.cursors.DictCursor)
 
 # mysql = MySQL(app)
@@ -99,8 +99,8 @@ def staff_login():
 			return render_template('StaffLogin.html', user=username, error=error)
 	else:
 		return render_template("StaffLogin.html")
-	
-	
+
+
 @app.route('/logout')
 def logout():
 	if "customer" in session:
@@ -138,38 +138,43 @@ def profile():
 @app.route('/payment', methods=['GET', 'POST'])
 def payment():
 	username = session['username']
+	print(username)
 	cursor = conn.cursor()
 	card_type = request.form.get('credit/debit')
 	card_num = request.form.get('card_num')
 	name_on_card = request.form.get('card_name')
 	exp_date = request.form.get('exp_date')
-	query = 'SELECT * FROM Ticket WHERE username = %s'
+	query = 'SELECT * FROM Ticket WHERE Email = %s'
 	cursor.execute(query, (username))
 	data = cursor.fetchone()
+	print(data)
+	error = None
 	if(data):
 		error = 'Payment information already exists'
-		return render_template('payment.html', error=error)
+		return render_template('Payment.html', error=error)
 	else:
 		new_info = 'INSERT INTO ticket VALUES(%s, %s, %s, %s)'
 		cursor.execute(new_info, (card_type, card_num, name_on_card, exp_date))
 		conn.commit()
 		cursor.close()
-	return render_template("Confirm.html", info = data, username=username)
+	return render_template("Confirm.html", info = data, username=username, error=error)
 
 
 #PersonalInformation
-@app.route('/personalinfo')
+@app.route('/personalinfo', methods = ["POST", "GET"])
 def bookflight():
 	username = session['username']
+	print(username)
 	cursor = conn.cursor()
 	name = request.form.get('name')
 	building_num = request.form.get('building_num')
 	street = request.form.get('street')
 	city = request.form.get('State')
 	passport = request.form.get('passport')
-	query = 'Select Name, email, Password, building_num, street, City, State, passport from Customer'
+	query = 'Select * from Customer WHERE email = %s'
 	cursor.execute(query)
 	data = cursor.fetchone()
+	print(data)
 	if(data):
 		print("Information is correct")
 		conn.commit()
@@ -184,13 +189,13 @@ def bookflight():
 #STAFF profile
 @app.route('/staffprofile')
 def staffprofile():
-	username = session['username'] 
+	username = session['staff'] 
 	cursor = conn.cursor()
 	#Selects all of airline staff flights
 	query = 'SELECT * FROM FLIGHT NATURAL JOIN AirlineStaff WHERE AirlineStaff.Airline_name = Flight.Airline_name'
 	cursor.execute(query)
 	data1 = cursor.fetchall()
-	return render_template("staffprofile.html")
+	return render_template("staffprofile.html", staff_flights= data1)
 
 #STAFF Register 
 @app.route('/staffregister', methods= ['GET', 'POST'])
@@ -227,7 +232,8 @@ def addinfo():
 	query = 'SELECT *from Flight' 
 	cursor.execute(query)
 	data = cursor.fetchone()
-	return render_template('AddInfo.html', data=flight_info)
+	print(data)
+	return render_template('AddInfo.html', flight_info=data)
 
 
 '''

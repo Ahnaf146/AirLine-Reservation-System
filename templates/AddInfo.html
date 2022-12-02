@@ -9,10 +9,12 @@
     <form action='POST'> 
         <label for="Flight_time">Flight </label>
             <select name = "flights" id="Flight_time">
-                <option value="9pm"> 9pm</option>
-                <option value="5pm"> 5pm</option>
-                <option value="12pm"> 12pm</option>
+                {%for line in flight_info%}
+                <option value="input"> {{line['Departure_date']}}</option>
+                <p> {{line['Departure_date']}} </p>
+                {%endfor %}
             </select>
+
             <input type="submit" value="Submit"/> 
     </form>
 

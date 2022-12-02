@@ -4,10 +4,10 @@
     <link rel= "stylesheet" href = "{{ url_for('static', filename='css/login.css')}}">
 </head>
 <body>
-    <h1 style= "text-align:center"> Choose payment method </h1> 
+    <h1 style= "text-align:center"> Choose payment method for {{username}}</h1> 
     <!-- Card type- credit/debit, card number, name on card, expiration date -->
     <div id = "payment_info">
-    <form method = "POST"> 
+    <form action = "/Payment" method = "POST"> 
         <label for="credit/debit"> Type of credit card</label> <br>
         <input type="radio" id="credit" name="credit/debit" value="credit/debit">
         <label for="credit"> Credit Card </label> <br>
