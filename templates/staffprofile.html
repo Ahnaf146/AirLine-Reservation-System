@@ -7,7 +7,16 @@
     <h1> Welcome to the staff profile</h1>
 
     <h1> View your scheduled flights</h1>
-    
+    {% for line in staff_flights%}
+        <h1> Departure </h1>
+        <p> {{line['Departure_date']}} </p>
+        <p> {{line['flight_number']}} </p>
+        <p> {{line['Departure_airport']}}</p>
+
+        <h1> Arrival </h1>
+        <p> {{line['Arrival_date']}}</p>
+        <p> {{line['Arrival_airport']}} </p>
+    {% endfor %}
 
     <h1> Create new flights </h1>
     <h1> Change status for flights</h1>

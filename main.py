@@ -195,7 +195,8 @@ def staffprofile():
 	query = 'SELECT * FROM FLIGHT NATURAL JOIN AirlineStaff WHERE AirlineStaff.Airline_name = Flight.Airline_name'
 	cursor.execute(query)
 	data1 = cursor.fetchall()
-	return render_template("staffprofile.html", staff_flights= data1)
+	print(data1)
+	return render_template("staffprofile.html", staff_flights=data1)
 
 #STAFF Register 
 @app.route('/staffregister', methods= ['GET', 'POST'])
