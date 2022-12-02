@@ -1,9 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel= "stylesheet" href = "{{ url_for('static', filename='css/login.css')}}">
+    <link rel= "stylesheet" href = "{{ url_for('static', filename='css/main.css')}}">
 </head>
 <body>
+    <ul>
+        <li> <a> {{user}} </a></li>
+        <li style="float:right"> <a href = "/logout"> Logout </a> </li>
+
+    </ul>
+
     <h1 style= "text-align:center"> Choose payment method for {{username}}</h1> 
     <!-- Card type- credit/debit, card number, name on card, expiration date -->
     <div id = "payment_info">

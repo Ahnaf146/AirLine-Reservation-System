@@ -4,6 +4,11 @@
     <link rel= "stylesheet" href = "{{ url_for('static', filename='css/main.css')}}">
 </head>
 <body>
+    <ul>
+        <li> <a> {{user}} </a></li>
+        <li style="float:right"> <a href = "/logout"> Logout </a> </li>
+
+    </ul>
     <!-- Soon extract the available flight times from sql database with option and fill in with python-->
     <h1> Add flight </h1>
     <form action='POST'> 

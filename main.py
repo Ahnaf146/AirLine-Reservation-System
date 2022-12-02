@@ -43,7 +43,6 @@ def home():
 	else:
 		return render_template('HomePage.html', flights=data1)
 	
-
 #CUSTOMER LOGIN PAGE AND LOGOUT 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -134,55 +133,7 @@ def profile():
 	return render_template("MyProfile.html", info = data1, user=user)
 
 
-#PAYMENT
-@app.route('/payment', methods=['GET', 'POST'])
-def payment():
-	username = session['username']
-	print(username)
-	cursor = conn.cursor()
-	card_type = request.form.get('credit/debit')
-	card_num = request.form.get('card_num')
-	name_on_card = request.form.get('card_name')
-	exp_date = request.form.get('exp_date')
-	query = 'SELECT * FROM Ticket WHERE Email = %s'
-	cursor.execute(query, (username))
-	data = cursor.fetchone()
-	print(data)
-	error = None
-	if(data):
-		error = 'Payment information already exists'
-		return render_template('Payment.html', error=error)
-	else:
-		new_info = 'INSERT INTO ticket VALUES(%s, %s, %s, %s)'
-		cursor.execute(new_info, (card_type, card_num, name_on_card, exp_date))
-		conn.commit()
-		cursor.close()
-	return render_template("Confirm.html", info = data, username=username, error=error)
 
-
-#PersonalInformation
-@app.route('/personalinfo', methods = ["POST", "GET"])
-def bookflight():
-	username = session['username']
-	print(username)
-	cursor = conn.cursor()
-	name = request.form.get('name')
-	building_num = request.form.get('building_num')
-	street = request.form.get('street')
-	city = request.form.get('State')
-	passport = request.form.get('passport')
-	query = 'Select * from Customer'
-	cursor.execute(query)
-	data = cursor.fetchone()
-	print(data)
-	if(data):
-		print("Information is correct")
-		conn.commit()
-		cursor.close()
-		return render_template('PersonalInfo.html', userinfo=data)
-	else:
-		error = "Personal information is incorrect. Doesn't match the user records"
-		return render_template("PersonalInfo.html", error=error)
 #STAFF INFO 
 
 
@@ -221,7 +172,7 @@ def staffregister():
 		cursor.close()
 		return render_template('staffprofile.html')
 
-		
+
 
 #Adds the flight,airport, and airplane
 @app.route('/addinfo')
@@ -233,7 +184,66 @@ def addinfo():
 	cursor.execute(query)
 	data = cursor.fetchone()
 	print(data)
-	return render_template('AddInfo.html', flight_info=data)
+	return render_template('AddInfo.html', user=username, flight_info=data)
+
+#PersonalInformation
+@app.route('/personalinfo', methods = ["POST", "GET"])
+def bookflight():
+	username = session['username']
+	print(username)
+	cursor = conn.cursor()
+	name = request.form.get('name')
+	building_num = request.form.get('building_num')
+	street = request.form.get('street')
+	city = request.form.get('State')
+	passport = request.form.get('passport')
+	query = 'Select * from Customer'
+	cursor.execute(query)
+	data = cursor.fetchone()
+	print(data)
+	if(data):
+		print("Information is correct")
+		conn.commit()
+		cursor.close()
+		return render_template('PersonalInfo.html', userinfo=data)
+	else:
+		error = "Personal information is incorrect. Doesn't match the user records"
+		return render_template("PersonalInfo.html", user = username, error=error)
+
+#PAYMENT
+@app.route('/payment', methods=['GET', 'POST'])
+def payment():
+	username = session['username']
+	print(username)
+	cursor = conn.cursor()
+	card_type = request.form.get('credit/debit')
+	card_num = request.form.get('card_num')
+	name_on_card = request.form.get('card_name')
+	exp_date = request.form.get('exp_date')
+	query = 'SELECT * FROM Ticket WHERE Email = %s'
+	cursor.execute(query, (username))
+	data = cursor.fetchone()
+	print(data)
+	error = None
+	if(data):
+		error = 'Payment information already exists'
+		return render_template('Payment.html', error=error)
+	else:
+		new_info = 'INSERT INTO ticket VALUES(%s, %s, %s, %s)'
+		cursor.execute(new_info, (card_type, card_num, name_on_card, exp_date))
+		conn.commit()
+		cursor.close()
+	return render_template("Confirm.html", info = data, user=username, error=error)
+
+
+#Confirmation page for information
+#Update the profile with the information
+@app.route('/confirm')
+def confirm():
+	username = session['username']
+	#Extract information from addinfo
+	#Arrange it using html
+	return render_template('Finalize.html', user=username)
 
 
 '''

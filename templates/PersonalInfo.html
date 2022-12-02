@@ -1,9 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel= "stylesheet" href = "{{ url_for('static', filename='css/login.css')}}">
+    <link rel= "stylesheet" href = "{{ url_for('static', filename='css/main.css')}}">
 </head>
 <body>
+    <ul>
+        <li> <a> {{user}} </a></li>
+        <li style="float:right"> <a href = "/logout"> Logout </a> </li>
+
+    </ul>
     <h1> Enter necessary information </h1>
     <!-- Match user information thats already logged in with-->
     <div>
