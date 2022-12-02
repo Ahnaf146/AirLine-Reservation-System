@@ -9,11 +9,13 @@
 <form method = "POST"> 
     <div class = "container"> 
         <strong> <label for="username"> Username/email: </label> <br> </strong>
-        <input type="text" id= "fname" name="fname"><br>
+        <input type="text" name="username" required/><br>
         <strong> <label for="password">password:</label> <br> </strong>
-        <input type="text" id="lname" name="lname">
-        <a href= '/staffprofile'>
-        <button type="submit" form="form" value="Submit">Submit</button>
+        <input type="text" name="password" required/>
+        <a>
+            <input type="submit"/>
+        <!-- <a href= '/staffprofile'>
+        <button type="submit" form="form" value="Submit">Submit</button> -->
         </a>
     </div>
 </form>
