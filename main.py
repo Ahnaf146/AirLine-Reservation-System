@@ -9,7 +9,7 @@ conn = pymysql.connect(host='localhost',
                        password='root',
                        db='Air Ticket Reservation System',
                        charset='utf8mb4',
-					   port = 8889,
+					   port = 3306,
                        cursorclass=pymysql.cursors.DictCursor)
 
 # mysql = MySQL(app)
@@ -79,8 +79,8 @@ def staff_login():
 		password = request.form.get('password')
 		cursor = conn.cursor()
 		#executes query
-		query = "SELECT * FROM login_data WHERE username=%s and password=%s AND CUSTOMER UNLIKE '%@%'"
-		cursor.execute(query)
+		query = "SELECT * FROM airlinestaff WHERE Username=%s and Password=%s"
+		cursor.execute(query,(username, password))
 		#stores the results in a variable
 		data = cursor.fetchone()
 		#use fetchall() if you are expecting more than 1 data row
