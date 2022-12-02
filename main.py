@@ -111,9 +111,32 @@ def logout():
 
 
 #REGISTER FOR NEW USER
-
-
-
+#Authenticates the register
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+	#grabs information from the forms
+	username = request.form.get('email')
+	password = request.form.get('password')
+	#cursor used to send queries
+	cursor = conn.cursor()
+	#executes query
+	query = 'SELECT * FROM login_data WHERE username = %s and password = %s'
+	 #AND username LIKE '%@'
+	cursor.execute(query, (username, password))
+	#stores the results in a variable
+	data = cursor.fetchone()
+	#use fetchall() if you are expecting more than 1 data row
+	error = None
+	if(data):
+		#If the previous query returns data, then user exists
+		error = "This user already exists"
+		return render_template('Register.html', error = error)
+	else:
+		ins = 'INSERT INTO login_data VALUES(%s, %s)'
+		cursor.execute(ins, (username, password))
+		conn.commit()
+		cursor.close()
+		return render_template('CustomerHomePage.html')
 
 #FLIGHT INFORMATION 
 
@@ -151,6 +174,7 @@ def staffprofile():
 #STAFF Register 
 @app.route('/staffregister', methods= ['GET', 'POST'])
 def staffregister():
+	#Requesting form information
 	name = request.form.get('name')
 	username = request.form.get('username')
 	password= request.form.get('password')
@@ -158,7 +182,8 @@ def staffregister():
 	phone_num = request.form.get('phone_num')
 	airline_name= request.form.get('Airline_name')
 	cursor = conn.cursor()
-	query = 'SELECT * from AirlineStaff WHERE Username= %s'
+	#Selecting data from Airline staff that matches username
+	query = 'SELECT * from AirlineStaff WHERE username= %s'
 	cursor.execute(query, (username))
 	data = cursor.fetchone()
 	error = None

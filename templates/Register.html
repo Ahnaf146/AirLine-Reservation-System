@@ -10,7 +10,7 @@
     <h1 style= "text-align:center">Customer Registration</h1>
 
     <div>
-        <form action="/payment">
+        <form action="/register" method = "POST">
           <label for="name">Name</label>
           <input type="text" id="name" name="name" placeholder="Enter Full Name">
       
@@ -35,9 +35,12 @@
           <label for="password">Password</label>
           <input type="text" id="password" name="password" placeholder="Enter a new password">
 
-          <a href = "/profile">
+          <a href = "/CustomerHomePage">
           <input type="submit" value="Submit">
           </a>
+          { % if error %  } 
+            <p> Error: {{error }} </p>
+          {% endif %} 
 
         </form>
     </div>
