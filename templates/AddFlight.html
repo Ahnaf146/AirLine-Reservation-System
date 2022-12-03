@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel= "stylesheet" href = "{{url_for('static', filename='css/login.css')}}">
+</head>
+<body>
+    {%if message %}
+    <h1 style= "text-align:center">{{message}}</h1>
+    {% endif %}
+
+
+    <h1 style= "text-align:center">Add Flight</h1>
+    
+    <div>
+        <form method = "POST" action="/addflight">
+        <label for="flight_num">Flight Number</label>
+        <input type="text" id="flight_num" name="flight_num" placeholder="Flight Number" required>
+
+        <label for="price">Price</label>
+        <input type="text" id="price" name="price" placeholder="Price" required>
+
+        <label for="departure_airport">Departure Airport</label>
+        <input type="text" id="departure_airport" name="departure_airport" placeholder="Departure Airport" required>
+    
+        <label for="departure_date">Departure Date</label>
+        <input type="date" id="departure_date" name="departure_date" placeholder="Departure Date" required>
+
+        <label for="departure_time">&nbsp Departure Time</label>
+        <input type="time" id="departure_time" name="departure_time" placeholder="Departure Time" required>
+        <div></div>
+        <label for="arrival_airport">Arrival Airport</label>
+        <input type="text" id="arrival_airport" name="arrival_airport" placeholder="Arrival Airport" required>
+
+        <label for="arrival_date">Arrival Date</label>
+        <input type="date" id="arrival_date" name="arrival_date" placeholder="Arrival Date" required>
+        
+        <label for="arrival_time">&nbsp Arrival Time</label>
+        <input type="time" id="arrival_time" name="arrival_time" placeholder="Arrival Time" required>
+        <div></div>
+        <label for="destination">Destination</label>
+        <input type="text" id="destination" name="destination" placeholder="Destination" required>
+        
+        <label for="status">Status</label>
+        <input type="text" id="status" name="status" placeholder="Status" required>
+
+        <label for="airline_name">Airline Name</label>
+        <input type="text" id="airline_name" name="airline_name" placeholder="Airline Name" required>
+
+        <a>
+        <input type="submit" value="Submit">
+        </a>
+
+        </form>
+    </div>
+
+
+    
+</body>
+</html>

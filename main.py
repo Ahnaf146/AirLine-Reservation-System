@@ -231,6 +231,40 @@ def staffregister():
     else:
         return render_template('staffregister.html')
 #Adds the flight,airport, and airplane
+@app.route('/addflight', methods=['GET', 'POST'])
+def addflight():
+    if request.method == "POST":
+        flight_num = request.form.get('flight_num')
+        price = request.form.get('price')
+        departure_airport = request.form.get('departure_airport')
+        departure_date = request.form.get('departure_date')
+        departure_time = request.form.get('departure_time')
+        arrival_airport = request.form.get('arrival_airport')
+        arrival_date = request.form.get('arrival_date')
+        arrival_time = request.form.get('arrival_time')
+        destination = request.form.get('destination')
+        status = request.form.get('status')
+        airline_name = request.form.get('airline_name')
+
+        cursor = conn.cursor()
+        query = 'SELECT * FROM flight WHERE flight_number = %s'
+        cursor.execute(query, (flight_num))
+        data = cursor.fetchone()
+        error = None
+        if(data):
+            error = "This flight already exists"
+            return render_template("addflight.html", error=error)
+        else:
+            ins = 'INSERT INTO flight VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
+            cursor.execute(ins, (flight_num, price, departure_airport, departure_date, departure_time, arrival_airport, arrival_date, arrival_time, destination, status, airline_name))
+            conn.commit()
+            cursor.close()
+            message = "Flight added successfully"
+            return render_template('addflight.html', message=message)
+    else:
+        return render_template('AddFlight.html')
+
+
 @app.route('/addinfo', methods= ['GET', 'POST'])
 def addinfo():
     username = session['username']
