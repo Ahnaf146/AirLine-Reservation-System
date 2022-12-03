@@ -114,29 +114,31 @@ def logout():
 #Authenticates the register
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-	#grabs information from the forms
-	username = request.form.get('email')
-	password = request.form.get('password')
-	#cursor used to send queries
-	cursor = conn.cursor()
-	#executes query
-	query = 'SELECT * FROM login_data WHERE username = %s and password = %s'
-	 #AND username LIKE '%@'
-	cursor.execute(query, (username, password))
-	#stores the results in a variable
-	data = cursor.fetchone()
-	#use fetchall() if you are expecting more than 1 data row
-	error = None
-	if(data):
-		#If the previous query returns data, then user exists
-		error = "This user already exists"
-		return render_template('Register.html', error = error)
-	else:
-		ins = 'INSERT INTO login_data VALUES(%s, %s)'
-		cursor.execute(ins, (username, password))
-		conn.commit()
-		cursor.close()
-		return render_template('CustomerHomePage.html')
+	if request.method == "POST":
+		#grabs information from the forms
+		username = request.form.get('email')
+		password = request.form.get('password')
+		#cursor used to send queries
+		cursor = conn.cursor()
+		#executes query
+		query = 'SELECT * FROM login_data WHERE username = %s and password = %s'
+	 	#AND username LIKE '%@'
+		cursor.execute(query, (username, password))
+		#stores the results in a variable
+		data = cursor.fetchone()
+		#use fetchall() if you are expecting more than 1 data row
+		error = None
+		if(data):
+			#If the previous query returns data, then user exists
+			error = "This user already exists"
+			return render_template('Register.html', error = error)
+		else:
+			ins = 'INSERT INTO login_data VALUES(%s, %s)'
+			cursor.execute(ins, (username, password))
+			conn.commit()
+			cursor.close()
+			return render_template('CustomerHomePage.html')
+	return render_template('Register.html')
 
 #FLIGHT INFORMATION 
 
