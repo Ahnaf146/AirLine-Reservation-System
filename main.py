@@ -133,11 +133,12 @@ def register():
 			error = "This user already exists"
 			return render_template('Register.html', error = error)
 		else:
+			session['customer'] = username
 			ins = 'INSERT INTO login_data VALUES(%s, %s)'
 			cursor.execute(ins, (username, password))
 			conn.commit()
 			cursor.close()
-			return render_template('CustomerHomePage.html')
+			return render_template('CustomerHomePage.html', user=username)
 	return render_template('Register.html')
 
 #FLIGHT INFORMATION 
@@ -198,8 +199,8 @@ def staffregister():
 		airline_name= request.form.get('Airline_name')
 		cursor = conn.cursor()
 		#Selecting data from Airline staff that matches username
-		query = 'SELECT * from AirlineStaff WHERE username= %s'
-		cursor.execute(query, (username))
+		query = 'SELECT * from AirlineStaff WHERE username= %s and password = %s'
+		cursor.execute(query, (username, password))
 		data = cursor.fetchone()
 		error = None
 		if(data):
@@ -277,12 +278,17 @@ def payment():
 		card_num = request.form.get('card_num')
 		name_on_card = request.form.get('card_name')
 		exp_date = request.form.get('exp_date')
-		query = 'SELECT * FROM Ticket WHERE Email = %s'
+		form_get = {}
+		form_get['card_number'] = card_type
+		form_get['card_type'] = card_num
+		form_get['Name_on_card'] = name_on_card
+		form_get['Expiration_date'] = exp_date
+		query = 'SELECT card_number, card_type, Name_on_card, Expiration_date FROM Ticket WHERE Email = %s'
 		cursor.execute(query, (username))
 		data = cursor.fetchone()
 		print(data)
 		error = None
-		if(data):
+		if(data == form_get):
 			error = 'Payment information already exists'
 			return render_template('Payment.html', error=error)
 		else:
@@ -290,7 +296,8 @@ def payment():
 			cursor.execute(new_info, (card_type, card_num, name_on_card, exp_date))
 			conn.commit()
 			cursor.close()
-			return render_template("Confirm.html", info = data, user=username, error=error)
+			return render_template("Confirm.html", new_info = data, user=username)
+	return render_template('Payment.html')
 		
 
 #Confirmation page for information
