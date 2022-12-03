@@ -103,7 +103,8 @@ def logout():
         session.pop('customer')
     if "staff" in session:
         session.pop('staff')
-    return redirect('/')
+    message = 'You have been logged out'
+    return render_template('HomePage.html', message=message)
 
 
 
