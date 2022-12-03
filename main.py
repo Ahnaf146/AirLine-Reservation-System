@@ -242,15 +242,16 @@ def bookflight():
 		street = request.form.get('street')
 		form_get['street'] = street
 		city = request.form.get('city')
-		form_get['city'] = city
-		state = request.form.get('state')
-		form_get['state'] = state
+		form_get['City'] = city
+		state = request.form.get('State')
+		form_get['State'] = state
 		passport = request.form.get('passport')
 		form_get['passport'] = passport
-		query = 'Select Name, building_num, street, city, state, passport from Customer where email = %s'
+		query = 'Select Name, building_num, street, City, State, passport from Customer where email = %s'
 		cursor.execute(query, username)
 		data = cursor.fetchone()
-		print(data)
+		print('Database', data)
+		print('Post_data', form_get)
 		if(data == form_get):
 			print("Information is correct")
 			conn.commit()
