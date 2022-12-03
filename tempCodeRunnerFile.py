@@ -112,42 +112,34 @@ def logout():
 
 #REGISTER FOR NEW USER
 #Authenticates the register
-#Authenticates the register
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    if request.method == 'POST':
-        #grabs information from the forms
-        username = request.form.get('email')
-        password = request.form.get('password')
-        fullname = request.form.get('fname')
-        building_num = request.form.get('building_num')
-        street = request.form.get('street')
-        City = request.form.get('city')
-        State = request.form.get('State')
-        passport = request.form.get('passport')
-
-        #cursor used to send queries
-        cursor = conn.cursor()
-        #executes query
-        query = 'SELECT * FROM customer WHERE email = %s'
-        cursor.execute(query, (username))
-        #stores the results in a variable
-        data = cursor.fetchone()
-        #use fetchall() if you are expecting more than 1 data row
-        error = None
-        if(data):
-            #If the previous query returns data, then user exists
-            error = "This user already exists"
-            return render_template('Register.html', error = error)
-        else:
-            ins = 'INSERT INTO customer VALUES (%s, %s, %s, %s, %s, %s, %s, %s)'
-            cursor.execute(ins, (username, fullname, password, building_num, street, City, State, passport))
-            conn.commit()
-            cursor.close()
-            session['customer'] = username
-            return redirect(url_for('home'))
-    else:
-        return render_template('Register.html')
+	if request.method == "POST":
+		#grabs information from the forms
+		username = request.form.get('email')
+		password = request.form.get('password')
+		#cursor used to send queries
+		cursor = conn.cursor()
+		#executes query
+		query = 'SELECT * FROM login_data WHERE username = %s and password = %s'
+	 	#AND username LIKE '%@'
+		cursor.execute(query, (username, password))
+		#stores the results in a variable
+		data = cursor.fetchone()
+		#use fetchall() if you are expecting more than 1 data row
+		error = None
+		if(data):
+			#If the previous query returns data, then user exists
+			error = "This user already exists"
+			return render_template('Register.html', error = error)
+		else:
+			session['customer'] = username
+			ins = 'INSERT INTO login_data VALUES(%s, %s)'
+			cursor.execute(ins, (username, password))
+			conn.commit()
+			cursor.close()
+			return render_template('CustomerHomePage.html', user=username)
+	return render_template('Register.html')
 
 #FLIGHT INFORMATION 
 
@@ -194,40 +186,35 @@ def staffedit():
 	cursor = conn.cursor()
 	return render_template("StaffEdit.html", user=username)
 
+#STAFF Register 
 @app.route('/staffregister', methods= ['GET', 'POST'])
 def staffregister():
-    if request.method == "POST":
-        name = request.form.get('name')
-        username = request.form.get('username')
-        password= request.form.get('password')
-        dob = request.form.get('dob')
-        phone_num = request.form.get('phone_num')
-        airline_name= request.form.get('Airline_name')
-        cursor = conn.cursor()
-        query = 'SELECT * from AirlineStaff WHERE Username= %s'
-        cursor.execute(query, (username))
-        data = cursor.fetchone()
-        error = None
-        if(data):
-            error = "This user already exists"
-            return render_template("staffregister.html", error=error)
-        else:
-            cursor = conn.cursor()
-            query = 'SELECT * from airline WHERE airline_name= %s'
-            cursor.execute(query, (airline_name))
-            data1 = cursor.fetchone()
-            if(data1):
-                ins = 'INSERT INTO AirlineStaff VALUES(%s, %s, %s, %s, %s, %s)'
-                cursor.execute(ins, (username, password, name, dob, phone_num, airline_name))
-                conn.commit()
-                cursor.close()
-                session['staff'] = username
-                return redirect(url_for('home'))
-            else:
-                error = "The entered airline does not exist. Please enter a valid airline"
-                return render_template("staffregister.html", error=error)
-    else:
-        return render_template('staffregister.html')
+	if request.method == "POST":
+		#Requesting form information
+		name = request.form.get('name')
+		username = request.form.get('username')
+		password= request.form.get('password')
+		dob = request.form.get('dob')
+		phone_num = request.form.get('phone_num')
+		airline_name= request.form.get('Airline_name')
+		cursor = conn.cursor()
+		#Selecting data from Airline staff that matches username
+		query = 'SELECT * from AirlineStaff WHERE username= %s and password = %s'
+		cursor.execute(query, (username, password))
+		data = cursor.fetchone()
+		error = None
+		if(data):
+			error = "This user already exists"
+			print(error)
+			return render_template("staffregister.html", error=error)
+		else:
+			ins = 'INSERT INTO AirlineStaff VALUES(%s, %s, %s, %s, %d, %s)'
+			cursor.execute(ins, (username, password, dob, phone_num, airline_name, ))
+			conn.commit()
+			cursor.close()
+		return render_template('staffprofile.html')
+	return render_template('StaffRegister.html')
+
 #Adds the flight,airport, and airplane
 @app.route('/addinfo', methods= ['GET', 'POST'])
 def addinfo():
@@ -371,83 +358,3 @@ def register():
 @app.route('/home')
 def home():
     username = session['username']
-    cursor = conn.cursor()
-    query = 'SELECT ts, blog_post FROM blog WHERE username = %s ORDER BY ts DESC'
-    cursor.execute(query, (username))
-    data1 = cursor.fetchall() 
-    for each in data1:
-        print(each['blog_post'])
-    cursor.close()
-    return render_template('home.html', username=username, posts=data1)
-
-
-@app.route('/logout')
-def logout():
-	session.pop('username')
-	return redirect('/')
-
-
-#Define route for register
-@app.route('/register')
-def register():
-	return render_template('Register.html')
-
-@app.route('/profile')
-#Load up any flights where id is the same 
-#And display them 
-def profile():
-	username = session['username']
-	cursor = conn.cursor()
-	#Selects ticket information where username is same and orders it by time
-	query = 'SELECT Ticket_id, flight_number, sold_price FROM ticket WHERE username = %s ORDER by date, time desc'
-	cursor.execute(query, (username))
-	data1 = cursor.fetchall()
-	cursor.close()
-	return render_template("MyProfile.html")
-
-@app.route('/statistics')
-def statistics():
-	return render_template("Statistics.html")
-
-@app.route('/payment', methods=['GET', 'POST'])
-def payment():
-	username = session['username']
-	cursor = conn.cursor()
-	card_type = request.form['credit/debit']
-	card_num = request.form['card_num']
-	name_on_card = request.form['card_name']
-	exp_date = request.form['exp_date']
-	query = 'SELECT * FROM Ticket WHERE username = %s'
-	cursor.execute(query, (username))
-	data = cursor.fetchone()
-
-	if(data):
-		error = 'Payment information already exists'
-		return render_template('payment.html', error=error)
-	else:
-		new_info = 'INSERT INTO ticket VALUES(%s, %s, %s, %s)'
-		cursor.execute(new_info, (card_type, card_num, name_on_card, exp_date))
-		conn.commit()
-		cursor.close()
-	return render_template("Payment.html")
-
-#Adds the flight,airport, and airplane
-@app.route('/addinfo')
-def addinfo():
-	return render_template('AddInfo.html')
-
-
-#Adds confirmation page
-@app.route('/confirm')
-def confirm():
-	
-return render_template('Finalize.html')
-
-
-#User authentification
-
-'''
-
-if __name__ == "__main__": 
-    app.run('127.0.0.1', 5000, debug= True )
-
