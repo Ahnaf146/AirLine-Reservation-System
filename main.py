@@ -188,28 +188,31 @@ def staffedit():
 #STAFF Register 
 @app.route('/staffregister', methods= ['GET', 'POST'])
 def staffregister():
-	#Requesting form information
-	name = request.form.get('name')
-	username = request.form.get('username')
-	password= request.form.get('password')
-	dob = request.form.get('dob')
-	phone_num = request.form.get('phone_num')
-	airline_name= request.form.get('Airline_name')
-	cursor = conn.cursor()
-	#Selecting data from Airline staff that matches username
-	query = 'SELECT * from AirlineStaff WHERE username= %s'
-	cursor.execute(query, (username))
-	data = cursor.fetchone()
-	error = None
-	if(data):
-		error = "This user already exists"
-		return render_template("staffregister.html", error=error)
-	else:
-		ins = 'INSERT INTO AirlineStaff VALUES(%s, %s, %s, %s, %d, %s)'
-		cursor.execute(ins, (username, password))
-		conn.commit()
-		cursor.close()
+	if request.method == "POST":
+		#Requesting form information
+		name = request.form.get('name')
+		username = request.form.get('username')
+		password= request.form.get('password')
+		dob = request.form.get('dob')
+		phone_num = request.form.get('phone_num')
+		airline_name= request.form.get('Airline_name')
+		cursor = conn.cursor()
+		#Selecting data from Airline staff that matches username
+		query = 'SELECT * from AirlineStaff WHERE username= %s'
+		cursor.execute(query, (username))
+		data = cursor.fetchone()
+		error = None
+		if(data):
+			error = "This user already exists"
+			print(error)
+			return render_template("staffregister.html", error=error)
+		else:
+			ins = 'INSERT INTO AirlineStaff VALUES(%s, %s, %s, %s, %d, %s)'
+			cursor.execute(ins, (username, password, dob, phone_num, airline_name, ))
+			conn.commit()
+			cursor.close()
 		return render_template('staffprofile.html')
+	return render_template('StaffRegister.html')
 
 #Adds the flight,airport, and airplane
 @app.route('/addinfo', methods= ['GET', 'POST'])

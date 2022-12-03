@@ -9,27 +9,27 @@
 
         <form action="/staffregister" method="POST">
           <label for="name">Name</label>
-          <input type="text" id="name" name="name" placeholder="Name">
+          <input type="text" id="name" name="name" placeholder="Name" required>
 
           <label for="username">Username</label>
-          <input type="text" id="username" name="username" placeholder="Username">
+          <input type="text" id="username" name="username" placeholder="Username" required>
 
           <label for="password">Password</label>
-          <input type="text" id="username" name="username" placeholder="Password">
+          <input type="text" id="username" name="username" placeholder="Password" required>
 
 
           <label for="dob">Date of Birth</label>
-          <input type="text" id="dob" name="dob" placeholder="(MM/DD/YYYY)">
+          <input type="text" id="dob" name="dob" placeholder="(MM/DD/YYYY)" required>
 
           <label for="phone_num">Phone number</label>
-          <input type="text" id="phone_num" name="phone_num" placeholder="phone_num">
+          <input type="text" id="phone_num" name="phone_num" placeholder="phone_num" required>
 
           <label for="Airline_name">Airline Name</label>
-          <input type="text" id="Airline_name" name="Airline_name" placeholder="Airline Name">
-
+          <input type="text" id="Airline_name" name="Airline_name" placeholder="Airline Name" required>
           {% if error %}
-          <input type="submit" value="Submit">
+            <p> {{error}} </p>
           {%endif %}
+          <input type="submit" value="Submit">
           </a>
 
         </form>
