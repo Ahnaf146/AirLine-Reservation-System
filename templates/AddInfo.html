@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,13 +12,14 @@
     
 
     </ul>
-
     <!-- Soon extract the available flight times from sql database with option and fill in with python-->
     <h1> Choose departure date</h1>
     <form action='POST'> 
         <label for="Flight_time">Flight </label>
             <select name = "flights" id="Flight_time">
-                <option value= "Time"> {{flight_info['Departure_date']}}</option>
+             {% for line in flight_info %}
+                <option value= "Time"> {{line['Departure_date']}}</option>
+            {% endfor %}
             </select>
             <input type="submit" value="Submit"/> 
     </form>
@@ -24,7 +27,9 @@
     <form action='POST'> 
         <label for="Flight_time">Flight </label>
             <select name = "flights" id="Flight_time">
-                <option value= "Time"> {{flight_info['Arrival_date']}}</option>
+                {% for line in flight_info %}
+                    <option value= "Time"> {{line['Arrival_date']}}</option>
+                {% endfor %}
             </select>
             <input type="submit" value="Submit"/> 
     </form>
@@ -32,7 +37,9 @@
     <form action='POST'> 
         <label for="Flight_time">Flight </label>
             <select name = "flights" id="Flight_time">
-                <option value= "Time"> {{flight_info['Destination']}}</option>
+                {% for line in flight_info %}
+                    <option value= "Time"> {{line['Destination']}}</option>
+                {% endfor %}
             </select>
 
             <input type="submit" value="Submit"/> 
@@ -42,7 +49,9 @@
     <form action="POST">
         <label for ="Airplane"> Airport </label> 
         <select name = "Airplane" id="Flight_time">
-            <option value="Airplane"> {{flight_info['Departure_airport']}} </option>
+            {% for line in flight_info %}
+                <option value="Airplane"> {{line['Departure_airport']}} </option>
+            {% endfor %}
         </select>
         <input type="submit" value="Submit"/> 
     </form>
@@ -51,7 +60,9 @@
     <form action = "POST">
         <label for ="Airport"> Airport </label> 
         <select name = "Airplane" id="Flight_time">
-            <option value="Airline1"> {{flight_info['Airline_name']}} </option>
+            {% for line in flight_info %}
+                <option value="Airline1"> {{line['Airline_name']}} </option>
+            {% endfor %}
         </select>
         <input type="submit" value="Submit"/> 
     </form>

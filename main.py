@@ -159,8 +159,7 @@ def profile():
 
 #STAFF INFO 
 
-
-#STAFF profile
+#STAFF Profile
 @app.route('/staffprofile')
 def staffprofile():
 	username = session['staff'] 
@@ -170,6 +169,19 @@ def staffprofile():
 	cursor.execute(query)
 	data1 = cursor.fetchall()
 	return render_template("staffprofile.html", staffuser = username, staff_flights=data1)
+
+@app.route('/staffview')
+#View flight ratings, frequent customers, reports, earned revenue
+def staffview():
+	username = session['staff']
+	cursor= conn.cursor()
+	return render_template("StaffView.html", user=username)
+
+@app.route('/staffedit')
+def staffedit():
+	username = session['staff']
+	cursor = conn.cursor()
+	return render_template("StaffEdit.html", user=username)
 
 #STAFF Register 
 @app.route('/staffregister', methods= ['GET', 'POST'])
@@ -197,18 +209,20 @@ def staffregister():
 		cursor.close()
 		return render_template('staffprofile.html')
 
-
-
 #Adds the flight,airport, and airplane
-@app.route('/addinfo')
+@app.route('/addinfo', methods= ['GET', 'POST'])
 def addinfo():
 	username = session['username']
 	cursor = conn.cursor()
 	#Select current flights 
 	query = 'SELECT * from Flight' 
 	cursor.execute(query)
-	data = cursor.fetchone()
-	print(data)
+	data = cursor.fetchall()
+	print(data[1])
+	for dict in data:
+		if(data):
+			print("continue to next page")
+			return render_template('AddInfo.html', user=username, flight_info=data)
 	return render_template('AddInfo.html', user=username, flight_info=data)
 	#Functionality for customer choosing flight
 	# if (yes):
@@ -218,50 +232,60 @@ def addinfo():
 @app.route('/personalinfo', methods = ["POST", "GET"])
 def bookflight():
 	username = session['username']
-	cursor = conn.cursor()
-	name = request.form.get('name')
-	building_num = request.form.get('building_num')
-	street = request.form.get('street')
-	city = request.form.get('State')
-	passport = request.form.get('passport')
-	query = 'Select * from Customer'
-	cursor.execute(query)
-	data = cursor.fetchone()
-	print(data)
-	if(data):
-		print("Information is correct")
-		conn.commit()
-		cursor.close()
-		return render_template('PersonalInfo.html', userinfo=data)
-	else:
-		error = "Personal information is incorrect. Doesn't match the user records"
-		return render_template("PersonalInfo.html", user = username, error=error)
+	if request.method == "POST":
+		cursor = conn.cursor()
+		form_get = {}
+		name = request.form.get('name')
+		form_get['Name'] = name
+		building_num = request.form.get('building_num')
+		form_get['building_num'] = building_num
+		street = request.form.get('street')
+		form_get['street'] = street
+		city = request.form.get('city')
+		form_get['city'] = city
+		state = request.form.get('state')
+		form_get['state'] = state
+		passport = request.form.get('passport')
+		form_get['passport'] = passport
+		query = 'Select Name, building_num, street, city, state, passport from Customer where email = %s'
+		cursor.execute(query, username)
+		data = cursor.fetchone()
+		print(data)
+		if(data == form_get):
+			print("Information is correct")
+			conn.commit()
+			cursor.close()
+			return render_template('Payment.html', user=username)
+		else:
+			error = "Personal information is incorrect. Doesn't match the user records"
+			return render_template("PersonalInfo.html", user = username, error=error)
+	return render_template("PersonalInfo.html", user=username)
 
 #PAYMENT
 @app.route('/payment', methods=['GET', 'POST'])
 def payment():
 	username = session['username']
-	print(username)
-	cursor = conn.cursor()
-	card_type = request.form.get('credit/debit')
-	card_num = request.form.get('card_num')
-	name_on_card = request.form.get('card_name')
-	exp_date = request.form.get('exp_date')
-	query = 'SELECT * FROM Ticket WHERE Email = %s'
-	cursor.execute(query, (username))
-	data = cursor.fetchone()
-	print(data)
-	error = None
-	if(data):
-		error = 'Payment information already exists'
-		return render_template('Payment.html', error=error)
-	else:
-		new_info = 'INSERT INTO ticket VALUES(%s, %s, %s, %s)'
-		cursor.execute(new_info, (card_type, card_num, name_on_card, exp_date))
-		conn.commit()
-		cursor.close()
-	return render_template("Confirm.html", info = data, user=username, error=error)
-
+	if request.method == "POST":
+		cursor = conn.cursor()
+		card_type = request.form.get('credit/debit')
+		card_num = request.form.get('card_num')
+		name_on_card = request.form.get('card_name')
+		exp_date = request.form.get('exp_date')
+		query = 'SELECT * FROM Ticket WHERE Email = %s'
+		cursor.execute(query, (username))
+		data = cursor.fetchone()
+		print(data)
+		error = None
+		if(data):
+			error = 'Payment information already exists'
+			return render_template('Payment.html', error=error)
+		else:
+			new_info = 'INSERT INTO ticket VALUES(%s, %s, %s, %s)'
+			cursor.execute(new_info, (card_type, card_num, name_on_card, exp_date))
+			conn.commit()
+			cursor.close()
+			return render_template("Confirm.html", info = data, user=username, error=error)
+		
 
 #Confirmation page for information
 #Update the profile with the information

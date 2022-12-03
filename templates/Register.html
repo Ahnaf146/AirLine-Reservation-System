@@ -8,7 +8,7 @@
     <button>Register for Airline Staff</button>
     </a>
     <h1 style= "text-align:center">Customer Registration</h1>
-
+    
     <div>
         <form action="/register" method = "POST">
           <label for="name">Name</label>
@@ -38,7 +38,7 @@
           <a href = "/CustomerHomePage">
           <input type="submit" value="Submit">
           </a>
-          { % if error %  } 
+          {% if error %} 
             <p> Error: {{error }} </p>
           {% endif %} 
 
