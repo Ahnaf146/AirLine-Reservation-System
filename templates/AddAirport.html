@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel= "stylesheet" href = "{{url_for('static', filename='css/login.css')}}">
+</head>
+<body>
+    {%if message %}
+    <h1 style= "text-align:center">{{message}}</h1>
+    {% endif %}
+
+
+    <h1 style= "text-align:center">Add Airport</h1>
+    
+    <div>
+        <form method = "POST" action="/addairport">
+        <label for="Name">Airport Name</label>
+        <input type="text" id="Name" name="Name" placeholder="Name" required>
+
+        <label for="city">City</label>
+        <input type="text" id="city" name="city" placeholder="City" required>
+
+        <label for="country">Country</label>
+        <input type="text" id="country" name="country" placeholder="Country" required>
+
+        <label for="AirportType">Airport Type:</label>
+        <select  list="AirportType" id="AirportType" name="AirportType" placeholder="Airport Type" required>
+            <option value="international">international</option>
+            <option value="domestic">domestic</option>
+            <option value="both">both</option>
+        </select>
+
+        <a>
+        <input type="submit" value="Submit">
+        </a>
+
+        </form>
+    </div>
+
+
+    
+</body>
+</html>

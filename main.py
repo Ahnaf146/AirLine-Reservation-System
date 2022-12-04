@@ -230,6 +230,65 @@ def staffregister():
                 return render_template("staffregister.html", error=error)
     else:
         return render_template('staffregister.html')
+
+        
+@app.route('/addairport', methods=['GET', 'POST'])
+def addairport():
+    if request.method == "POST":
+        airport_name = request.form.get('Name')
+        city = request.form.get('city')
+        country = request.form.get('country')
+        AirportType = request.form.get('AirportType')
+        cursor = conn.cursor()
+        query = 'SELECT * from airport WHERE Name= %s'
+        cursor.execute(query, (airport_name))
+        data = cursor.fetchone()
+        error = None
+        if(data):
+            message = "This airport already exists"
+            return render_template("addairport.html", message=message)
+        else:
+            ins = 'INSERT INTO airport VALUES(%s, %s, %s, %s)'
+            cursor.execute(ins, (airport_name, city, country, AirportType))
+            conn.commit()
+            cursor.close()
+            message = "Airport added successfully"
+            return render_template('addairport.html', message=message)
+    else:
+        return render_template('addairport.html')
+
+@app.route('/addairplane', methods=['GET', 'POST'])
+def addairplane():
+    if request.method == "POST":
+        airplane_id = request.form.get('airplane_id')
+        Name = request.form.get('Name')
+        Manufacturing_company = request.form.get('Manufacturing_company')
+        Num_of_seats = request.form.get('Num_of_seats')
+        Age = request.form.get('Age')
+        airline_name = request.form.get('airline_name')
+        cursor = conn.cursor()
+        query = 'SELECT * from airplane WHERE airplane_id= %s'
+        cursor.execute(query, (airplane_id))
+        data = cursor.fetchone()
+        error = None
+        if(data):
+            message = "This airplane already exists"
+            return render_template("addairplane.html", message=message)
+        else:
+            ins = 'INSERT INTO airplane VALUES(%s, %s, %s, %s, %s, %s)'
+            cursor.execute(ins, (airplane_id, Name, Manufacturing_company, Num_of_seats, Age, airline_name))
+            conn.commit()
+            cursor.close()
+            message = "Airplane added successfully"
+            return render_template('addairplane.html', message=message)
+    else:
+        cursor = conn.cursor()
+        query = 'SELECT Airline_name FROM airline'
+        cursor.execute(query)
+        airlines = cursor.fetchall()
+        cursor.execute(query)
+        return render_template('addairplane.html', airlines=airlines)
+
 #Adds the flight,airport, and airplane
 @app.route('/addflight', methods=['GET', 'POST'])
 def addflight():

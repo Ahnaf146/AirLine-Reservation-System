@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel= "stylesheet" href = "{{url_for('static', filename='css/login.css')}}">
+</head>
+<body>
+    {%if message %}
+    <h1 style= "text-align:center">{{message}}</h1>
+    {% endif %}
+
+
+    <h1 style= "text-align:center">Add Airplane</h1>
+    
+    <div>
+        <form method = "POST" action="/addairplane">
+        <label for="airplane_id">Airplane ID</label>
+        <input type="text" id="airplane_id" name="airplane_id" placeholder="Airplane ID" required>
+
+        <label for="Name">Model</label>
+        <input type="text" id="Name" name="Name" placeholder="Model" required>
+
+        <label for="Manufacturing_company">Manufacturing Company</label>
+        <input type="text" id="Manufacturing_company" name="Manufacturing_company" placeholder="Manufacturing Company" required>
+
+        <label for="Num_of_seats">Number of Seats</label>
+        <input type="text" id="Num_of_seats" name="Num_of_seats" placeholder="Number of Seats" required>
+
+        <label for="Age">Age</label>
+        <input type="text" id="Age" name="Age" placeholder="years" required>
+
+        <label for="airline_name">Airline Name:</label>
+        <select  list="airline_name" id="airline_name" name="airline_name" placeholder="Airline Name" required>
+            {%for line in airlines%}
+            <option value={{line['Airline_name']}}>{{line['Airline_name']}}</option>
+            {%endfor%}
+        </select>
+
+        <a>
+        <input type="submit" value="Submit">
+        </a>
+
+        </form>
+    </div>
+
+
+    
+</body>
+</html>
