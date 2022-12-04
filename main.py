@@ -242,27 +242,43 @@ def addflight():
         arrival_airport = request.form.get('arrival_airport')
         arrival_date = request.form.get('arrival_date')
         arrival_time = request.form.get('arrival_time')
-        destination = request.form.get('destination')
+        airplane_id = request.form.get('airplane_id')
         status = request.form.get('status')
-        airline_name = request.form.get('airline_name')
+        # airline_name = request.form.get('airline_name')
+        airline_name = 'Jet Blue'
 
+        print(airline_name)
         cursor = conn.cursor()
         query = 'SELECT * FROM flight WHERE flight_number = %s'
         cursor.execute(query, (flight_num))
         data = cursor.fetchone()
+   
         error = None
         if(data):
-            error = "This flight already exists"
-            return render_template("addflight.html", error=error)
+            message = "This flight already exists"
+            return render_template("addflight.html", message=message)
         else:
             ins = 'INSERT INTO flight VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
-            cursor.execute(ins, (flight_num, price, departure_airport, departure_date, departure_time, arrival_airport, arrival_date, arrival_time, destination, status, airline_name))
+            cursor.execute(ins, (flight_num, price, departure_airport, departure_date, departure_time, arrival_airport, arrival_date, arrival_time, status, airline_name,  airplane_id))
             conn.commit()
             cursor.close()
             message = "Flight added successfully"
             return render_template('addflight.html', message=message)
     else:
-        return render_template('AddFlight.html')
+        cursor = conn.cursor()
+        query = 'SELECT Name FROM airport'
+        cursor.execute(query)
+        airports = cursor.fetchall()
+        query = 'SELECT Airline_name FROM airline'
+        cursor.execute(query)
+        airlines = cursor.fetchall()
+        query = 'SELECT Airplane_id FROM airplane'
+        cursor.execute(query)
+        airplanes = cursor.fetchall()
+        cursor.close()
+        print(airlines)
+        print(len(airlines))
+        return render_template('AddFlight.html',airports=airports, airlines=airlines, airplanes=airplanes)
 
 
 @app.route('/addinfo', methods= ['GET', 'POST'])
