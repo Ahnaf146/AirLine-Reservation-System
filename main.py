@@ -388,25 +388,26 @@ def bookflight(flight_num):
 
 @app.route('/addinfo', methods= ['GET', 'POST'])
 def addinfo():
-    username = session['username']
+    # query = 'SELECT destination, departure_date from Flight'
+    # cursor.execute(query)
+    # data_1 = cursor.fetchall()
+    # data_1_formatted = data_1[1]
+    customer = session['customer']
+    destination = request.form.get('destination')
+    departure_date = request.form.get('departure_date')
     cursor = conn.cursor()
-    query = 'SELECT destination, departure_date from Flight'
+    query = 'SELECT Name from airport'
     cursor.execute(query)
-    data_1 = cursor.fetchall()
-    data_1_formatted = data_1[1]
-    if request.method == "POST":
-    #Form data
-        destination = request.form.get('destination')
-        departure_date = request.form.get('departure_date')
-        print(destination)
-        #Select current flights 
-        query = 'SELECT * from Flight where destination = %s'
-        cursor.execute(query, (destination))
-        data = cursor.fetchall()
-        data_2 = data[1]
-        print("continue to next page")
-        return render_template('BookFlight.html', user=username, flight_info=data_2)
-    return render_template('AddInfo.html', user=username, flight_info = data_1_formatted)
+    airports = cursor.fetchall()
+    cursor.close()
+    return render_template("Addinfo.html", user=customer, airports=airports)
+        # d
+        # print(destination)
+        # #Select current flights 
+        # query = 'SELECT * from Flight where destination = %s'
+        # cursor.execute(query, (destination))
+        # data = cursor.fetchall()
+        # data_2 = data[1]
     #Functionality for customer choosing flight
     # if (yes):
     # 	query= 'INSERT into Ticket %s %s %s %s'

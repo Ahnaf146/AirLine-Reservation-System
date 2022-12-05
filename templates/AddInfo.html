@@ -18,8 +18,8 @@
     <form action='POST'> 
         <label for="Flight_time">Destination </label>
             <select name = "destination" id="Flight_time">
-             {% for line in flight_info %}
-                <option value="{{line['Destination']}}"> {{line['Destination']}}</option>
+             {% for line in airports %}
+                <option value="{{line['Name']}}"> {{line['Name']}}</option>
             {% endfor %}
             </select>
 
@@ -28,9 +28,9 @@
     <form action='POST'> 
         <label for="Flight_time">Arrival Date</label>
             <select name = "departure_date" id="Flight_time">
-                {% for line in flight_info %}
-                    <option value= "{{line['Departure_date']}}"> {{line['Departure_date']}}</option>
-                {% endfor %}
+                {% for line in airports %}
+                <option value="{{line['Name']}}"> {{line['Name']}}</option>
+            {% endfor %}
             </select>
     </form>
 
