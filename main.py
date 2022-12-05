@@ -2,6 +2,8 @@ from flask import Flask, render_template, request, session, url_for, redirect
 import bcrypt
 import pymysql.cursors
 import mysql
+import random
+
 
 app = Flask(__name__)
 
@@ -341,6 +343,48 @@ def addflight():
         print(len(airlines))
         return render_template('AddFlight.html',airports=airports, airlines=airlines, airplanes=airplanes)
 
+@app.route('/bookflight/<flight_num>', methods=['GET', 'POST'])
+def bookflight(flight_num):
+    if request.method == "POST":
+        customer = request.form.get('customer')
+        cursor = conn.cursor()
+        query = 'SELECT Base_price FROM flight WHERE flight_number = %s'
+        cursor.execute(query, (flight_num))
+        data = cursor.fetchone()
+        if(data):
+            # redirect to payment page
+            email = session['customer']
+            price = data.get('Base_price')
+            i = 0
+            while i < 1:
+                ticket_id = random.randint(1000,9999)
+                cursor = conn.cursor()
+                query = 'SELECT * FROM ticket WHERE Ticket_id = %s'
+                cursor.execute(query, (flight_num))
+                bool = cursor.fetchone()
+                cursor.close()
+                # if bool is null, then the id is unique
+                if bool == None:
+                    i += 1
+            card_type = request.form.get('credit/debit')
+            card_num = request.form.get('card_num')
+            name_on_card = request.form.get('card_name')
+            exp_date = request.form.get('exp_date')
+            cursor = conn.cursor()
+            ins = 'INSERT INTO ticket VALUES(%s, %s, %s, %s, %s, %s, %s, %s)'
+            print(ticket_id,email,flight_num,price,card_type,card_num,name_on_card,exp_date)
+            cursor.execute(ins, (ticket_id,email,flight_num,price,card_type,card_num,name_on_card,exp_date))
+            conn.commit()
+            cursor.close()
+            message = "Flight booked successfully"
+            return redirect(url_for('home', message=message))
+        else:
+            message = "This flight does not exist"
+            return render_template("bookflight.html", message=message)
+    else:
+        print(flight_num)
+        return render_template('payment.html',flight_num=flight_num)
+
 
 @app.route('/addinfo', methods= ['GET', 'POST'])
 def addinfo():
@@ -384,38 +428,38 @@ def addinfo():
 
 
 #PersonalInformation
-@app.route('/personalinfo', methods = ["POST", "GET"])
-def bookflight():
-    username = session['username']
-    if request.method == "POST":
-        cursor = conn.cursor()
-        form_get = {}
-        name = request.form.get('name')
-        form_get['Name'] = name
-        building_num = request.form.get('building_num')
-        form_get['building_num'] = building_num
-        street = request.form.get('street')
-        form_get['street'] = street
-        city = request.form.get('city')
-        form_get['City'] = city
-        state = request.form.get('State')
-        form_get['State'] = state
-        passport = request.form.get('passport')
-        form_get['passport'] = passport
-        query = 'Select Name, building_num, street, City, State, passport from Customer where email = %s'
-        cursor.execute(query, username)
-        data = cursor.fetchone()
-        print('Database', data)
-        print('Post_data', form_get)
-        if(data == form_get):
-            print("Information is correct")
-            conn.commit()
-            cursor.close()
-            return render_template('Payment.html', user=username)
-        else:
-            error = "Personal information is incorrect. Doesn't match the user records"
-            return render_template("PersonalInfo.html", user = username, error=error)
-    return render_template("PersonalInfo.html", user=username)
+# @app.route('/personalinfo', methods = ["POST", "GET"])
+# def bookflight():
+#     username = session['username']
+#     if request.method == "POST":
+#         cursor = conn.cursor()
+#         form_get = {}
+#         name = request.form.get('name')
+#         form_get['Name'] = name
+#         building_num = request.form.get('building_num')
+#         form_get['building_num'] = building_num
+#         street = request.form.get('street')
+#         form_get['street'] = street
+#         city = request.form.get('city')
+#         form_get['City'] = city
+#         state = request.form.get('State')
+#         form_get['State'] = state
+#         passport = request.form.get('passport')
+#         form_get['passport'] = passport
+#         query = 'Select Name, building_num, street, City, State, passport from Customer where email = %s'
+#         cursor.execute(query, username)
+#         data = cursor.fetchone()
+#         print('Database', data)
+#         print('Post_data', form_get)
+#         if(data == form_get):
+#             print("Information is correct")
+#             conn.commit()
+#             cursor.close()
+#             return render_template('Payment.html', user=username)
+#         else:
+#             error = "Personal information is incorrect. Doesn't match the user records"
+#             return render_template("PersonalInfo.html", user = username, error=error)
+#     return render_template("PersonalInfo.html", user=username)
 
 #PAYMENT
 @app.route('/payment', methods=['GET', 'POST'])
@@ -446,7 +490,7 @@ def payment():
             conn.commit()
             cursor.close()
             return render_template("Confirm.html", new_info = data, user=username)
-    return render_template('Payment.html')
+    return render_template('Payment.html',flight_num=flight_num)
         
 
 #Confirmation page for information

@@ -19,7 +19,9 @@
     </ul>
     
 
-
+    {%if message %}
+    <h1 style= "text-align:center">{{message}}</h1>
+    {% endif %}
 
 
     <div id = "welcome">
@@ -70,6 +72,7 @@
                 <td>{{line['Arrival_time']}}</td>
                 <td>{{line['Destination']}}</td>
                 <td>{{line['flight_status']}}</td>
+                <td><a href= "/bookflight/{{line['flight_number']}}">Click here to book this flight</a></td>
             </tr>
             {%endfor %}
         </table>

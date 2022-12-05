@@ -10,24 +10,23 @@
 
     </ul>
 
-    <h1 style= "text-align:center"> Choose payment method for {{username}}</h1> 
+    <h1 style= "text-align:center"> Enter Payment Details</h1> 
     <!-- Card type- credit/debit, card number, name on card, expiration date -->
     <div id = "payment_info">
-    <form action = "/Payment" method = "POST"> 
-        <label for="credit/debit"> Type of credit card</label> <br>
-        <input type="radio" id="credit" name="credit/debit" value="credit/debit">
-        <label for="credit"> Credit Card </label> <br>
-        <input type="radio" id="debit" name="credit/debit" value="credit/debit">
-        <label for="debit"> Debit Card </label> <br>
-        <label for= "card_num"> Card number </label>
-        <input type="text" id = "card_num" value= ""> 
+    <form action = "/bookflight/{{flight_num}}" method = "POST"> 
+        <label for="credit/debit">Credit/Debit:</label>
+        <select  list="credit/debit" id="credit/debit" name="credit/debit" placeholder="credit/debit" required>
+            <option value="Credit">international</option>
+            <option value="Debit">domestic</option>
+        </select>
+        <label for= "card_num"> Card Number </label>
+        <input type="text" id="card_num" name="card_num" placeholder="Card Number" required> 
         <label for ="card_name"> Name on card </label>
-        <input type="text" id = "card_name" value= "">
-        <label for ="exp_date"> Expiration Date (mm/yy) </label>
-        <input type="text" id = "exp_date" value= "">
-        <a href = "/confirm">
-        <button type="submit" form="form" value="Submit">Submit</button>
-        </a>
+        <input type="text" id = "card_name" name="card_name" placeholder="Card Name" required>
+        <label for ="exp_date"> Expiration Date: </label>
+        <input type="text" id = "exp_date" name="exp_date" placeholder="mm/yy" required>
+
+        <input type="submit" value="Submit">
     </form>
     </div>
 </body>

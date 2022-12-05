@@ -61,6 +61,7 @@
             <th>Arrival Time</th>
             <th>Destination</th>
             <th>Flight status </th>
+            <th>Book Flight </th>
         {% for line in flights%}
             <tr>
                 <td>{{line['flight_number']}}</td>
@@ -70,6 +71,9 @@
                 <td>{{line['Arrival_time']}}</td>
                 <td>{{line['Destination']}}</td>
                 <td>{{line['flight_status']}}</td>
+                <!-- button to book flight -->
+                <td><a href= "/bookflight/{{line['flight_number']}}">Book Flight</a></td>
+
             </tr>
             {%endfor %}
         </table>
