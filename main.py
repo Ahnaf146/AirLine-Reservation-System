@@ -156,6 +156,7 @@ def register():
 #Load up any flights where id is the same 
 #And display them 
 def profile():
+
     user = session['username']
     cursor = conn.cursor()
     #Selects ticket information where username is same and orders it by time
@@ -164,6 +165,7 @@ def profile():
     data1 = cursor.fetchall()
     cursor.close()
     return render_template("MyProfile.html", info = data1, user=user)
+
 
 
 
@@ -344,19 +346,42 @@ def addflight():
 def addinfo():
     username = session['username']
     cursor = conn.cursor()
-    #Select current flights 
-    query = 'SELECT * from Flight' 
+    query = 'SELECT destination, departure_date from Flight'
     cursor.execute(query)
-    data = cursor.fetchall()
-    print(data[1])
-    for dict in data:
-        if(data):
-            print("continue to next page")
-            return render_template('AddInfo.html', user=username, flight_info=data)
-    return render_template('AddInfo.html', user=username, flight_info=data)
+    data_1 = cursor.fetchall()
+    data_1_formatted = data_1[1]
+    if request.method == "POST":
+    #Form data
+        destination = request.form.get('destination')
+        departure_date = request.form.get('departure_date')
+        print(destination)
+        #Select current flights 
+        query = 'SELECT * from Flight where destination = %s'
+        cursor.execute(query, (destination))
+        data = cursor.fetchall()
+        data_2 = data[1]
+        print("continue to next page")
+        return render_template('BookFlight.html', user=username, flight_info=data_2)
+    return render_template('AddInfo.html', user=username, flight_info = data_1_formatted)
     #Functionality for customer choosing flight
     # if (yes):
     # 	query= 'INSERT into Ticket %s %s %s %s'
+
+
+#DO NOW
+# #Adds on to previous function based on query
+# @app.route('/bookflight', methods = ['GET', 'POST'])
+# def addmoreinfo():
+#     username = session['username']
+#     cursor = conn.cursor()
+#     Airline = request.form.get('Airline')
+#     departure_airport = request.form.get('departure_airport')
+#     arrival_date = request.form.get('arrival_date')
+#     arrival_airport = request.form.get('arrival_airport')
+#     #Create python function that saves all this data and then utilized in confirm function
+#     #When generating the ticket 
+#     return render_template('PersonalInfo.html', user=username, data)
+
 
 #PersonalInformation
 @app.route('/personalinfo', methods = ["POST", "GET"])
