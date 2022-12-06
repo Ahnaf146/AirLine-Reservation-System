@@ -14,31 +14,143 @@
     </ul>
     <!-- Soon extract the available flight times from sql database with option and fill in with python-->
     <h1 style= "text-align:center"> Let's start with some basic information </h1>
-    <h1> Choose destination</h1>
-    <form action='POST'> 
-        <label for="Flight_time">Destination </label>
-            <select name = "destination" id="Flight_time">
+    <h1> ONE-WAY</h1>
+
+    <div>
+        <form method = "POST" action="/addinfo">
+            <label for="departure_airport">Departure Airport: </label>
+            <select name = "departure_airport" id="departure_airport" required>
              {% for line in airports %}
                 <option value="{{line['Name']}}"> {{line['Name']}}</option>
             {% endfor %}
             </select>
 
-    </form>
-    <h1> Choose arrival date</h1>
-    <form action='POST'> 
-        <label for="Flight_time">Arrival Date</label>
-            <select name = "departure_date" id="Flight_time">
-                {% for line in airports %}
+            <label for="departure_date">Departure Date:</label>
+            <input type="date" id="departure_date" name="departure_date" placeholder="Departure Date" required>
+
+            <label for="arrival_airport">Arrival Airport </label>
+            <select name = "arrival_airport" id="arrival_airport" required>
+             {% for line in airports %}
                 <option value="{{line['Name']}}"> {{line['Name']}}</option>
             {% endfor %}
             </select>
-    </form>
 
-    <br> 
-    <a href = "/personalinfo">
-    <button type= "submit" value= "Submit" class="button">Continue!</button>
-    </a>
-    </br>
+        <a>
+        <input type="submit" value="Submit">
+        </a>
+
+        </form>
+    </div>
+    <h1> ROUND TRIP</h1>
+
+    <div>
+        <form method = "POST" action="/addinfo">
+            <label for="departure_airport">Departure Airport: </label>
+            <select name = "departure_airport" id="departure_airport" required>
+             {% for line in airports %}
+                <option value="{{line['Name']}}"> {{line['Name']}}</option>
+            {% endfor %}
+            </select>
+
+            <label for="departure_date">Departure Date:</label>
+            <input type="date" id="departure_date" name="departure_date" placeholder="Departure Date" required>
+
+            <label for="arrival_airport">Arrival Airport </label>
+            <select name = "arrival_airport" id="arrival_airport" required>
+             {% for line in airports %}
+                <option value="{{line['Name']}}"> {{line['Name']}}</option>
+            {% endfor %}
+            </select>
+
+            <label for="return_date">Return Date:</label>
+            <input type="date" id="return_date" name="return_date" placeholder="Return Date" required>
+            
+            <a>
+            <input type="submit" value="Submit">
+            </a>
+
+        {% if bool1%}
+            <h1> Flight Results </h1>
+        <table style= "justify-content: center;">
+            <th>Flight Number</th>
+            <th>Departure Airport</th>
+            <th>Departure_date</th>
+            <th>Arrival Airport</th>
+            <th>Arrival Time</th>
+            <th>Destination</th>
+            <th>Flight status </th>
+        {% for line in flights%}
+            <tr>
+                <td>{{line['flight_number']}}</td>
+                <td>{{line['Departure_airport']}}</td>
+                <td>{{line['Departure_date']}}</td>
+                <td>{{line['Arrival_airport']}}</td>
+                <td>{{line['Arrival_time']}}</td>
+                <td>{{line['Destination']}}</td>
+                <td>{{line['flight_status']}}</td>
+                <td><a href= "/bookflight/{{line['flight_number']}}">Click here to book this flight</a></td>
+            </tr>
+            {%endfor %}
+        </table>
+        {% endif %}
+        
+        {% if bool2%}
+
+        <h1> Departure Flights </h1>
+        <table style= "justify-content: center;">
+            <th>Flight Number</th>
+            <th>Departure Airport</th>
+            <th>Departure_date</th>
+            <th>Arrival Airport</th>
+            <th>Arrival Time</th>
+            <th>Destination</th>
+            <th>Flight status </th>
+        {% for line in departure_flight%}
+            <tr>
+                <td>{{line['flight_number']}}</td>
+                <td>{{line['Departure_airport']}}</td>
+                <td>{{line['Departure_date']}}</td>
+                <td>{{line['Arrival_airport']}}</td>
+                <td>{{line['Arrival_time']}}</td>
+                <td>{{line['Destination']}}</td>
+                <td>{{line['flight_status']}}</td>
+                <td><a href= "/bookflight/{{line['flight_number']}}">Click here to book this flight</a></td>
+            </tr>
+            {%endfor %}
+        </table>
+
+        <h1> Return Flights </h1>
+        <table style= "justify-content: center;">
+            <th>Flight Number</th>
+            <th>Departure Airport</th>
+            <th>Departure_date</th>
+            <th>Arrival Airport</th>
+            <th>Arrival Time</th>
+            <th>Destination</th>
+            <th>Flight status </th>
+        {% for line in return_flight%}
+            <tr>
+                <td>{{line['flight_number']}}</td>
+                <td>{{line['Departure_airport']}}</td>
+                <td>{{line['Departure_date']}}</td>
+                <td>{{line['Arrival_airport']}}</td>
+                <td>{{line['Arrival_time']}}</td>
+                <td>{{line['Destination']}}</td>
+                <td>{{line['flight_status']}}</td>
+                <td><a href= "/bookflight/{{line['flight_number']}}">Click here to book this flight</a></td>
+            </tr>
+            {%endfor %}
+        </table>
+
+
+        {% endif %}
+            
+
+  
+
+        </form>
+    </div>
+    
 
     
 </body>

@@ -12,7 +12,7 @@ conn = pymysql.connect(host='localhost',
                        password='root',
                        db='Air Ticket Reservation System',
                        charset='utf8mb4',
-                       port = 8889,
+                       port = 3306,
                        cursorclass=pymysql.cursors.DictCursor)
 
 # mysql = MySQL(app)
@@ -297,7 +297,17 @@ def addairplane():
 @app.route('/addflight', methods=['GET', 'POST'])
 def addflight():
     if request.method == "POST":
-        flight_num = request.form.get('flight_num')
+        i = 0
+        while i < 1:
+            flight_num = random.randint(1000,9999)
+            cursor = conn.cursor()
+            query = 'SELECT * FROM ticket WHERE Ticket_id = %s'
+            cursor.execute(query, (flight_num))
+            bool = cursor.fetchone()
+            cursor.close()
+            # if bool is null, then the id is unique
+            if bool == None:
+                i += 1
         price = request.form.get('price')
         departure_airport = request.form.get('departure_airport')
         departure_date = request.form.get('departure_date')
@@ -388,30 +398,48 @@ def bookflight(flight_num):
 
 @app.route('/addinfo', methods= ['GET', 'POST'])
 def addinfo():
-    # query = 'SELECT destination, departure_date from Flight'
-    # cursor.execute(query)
-    # data_1 = cursor.fetchall()
-    # data_1_formatted = data_1[1]
-    customer = session['customer']
-    destination = request.form.get('destination')
-    departure_date = request.form.get('departure_date')
-    cursor = conn.cursor()
-    query = 'SELECT Name from airport'
-    cursor.execute(query)
-    airports = cursor.fetchall()
-    cursor.close()
-    return render_template("Addinfo.html", user=customer, airports=airports)
-        # d
-        # print(destination)
-        # #Select current flights 
-        # query = 'SELECT * from Flight where destination = %s'
-        # cursor.execute(query, (destination))
-        # data = cursor.fetchall()
-        # data_2 = data[1]
-    #Functionality for customer choosing flight
-    # if (yes):
-    # 	query= 'INSERT into Ticket %s %s %s %s'
-
+    if request.method == "POST":
+        cursor = conn.cursor()
+        query = 'SELECT Name from airport'
+        cursor.execute(query)
+        airports = cursor.fetchall()
+        cursor.close()
+        customer = session['customer']
+        departure_airport = request.form.get('departure_airport')
+        departure_date = request.form.get('departure_date')
+        arrival_airport = request.form.get('arrival_airport')
+        return_date = request.form.get('return_date')
+        bool1 = True;
+        bool2 = True;
+        if return_date == None:
+            cursor = conn.cursor()
+            query = 'SELECT * FROM flight WHERE departure_airport = %s AND departure_date = %s AND arrival_airport = %s'
+            cursor.execute(query, (departure_airport, departure_date, arrival_airport))
+            data = cursor.fetchall()
+            cursor.close()
+            print(departure_airport, departure_date, arrival_airport)
+            print(data)
+            return render_template("Addinfo.html", user=customer, flights=data, bool1=bool1, airports=airports)
+        else:
+            cursor = conn.cursor()
+            query = 'SELECT * FROM flight WHERE departure_airport = %s AND departure_date = %s AND arrival_airport = %s'
+            cursor.execute(query, (departure_airport, departure_date, arrival_airport))
+            data1 = cursor.fetchall()
+            query = 'SELECT * FROM flight WHERE departure_airport = %s AND departure_date = %s AND arrival_airport = %s'
+            cursor.execute(query, (arrival_airport, return_date, departure_airport))
+            data2 = cursor.fetchall()
+            cursor.close()
+            print(departure_airport, departure_date, arrival_airport)
+            return_date = None
+            return render_template("Addinfo.html", user=customer, departure_flight=data1, return_flight=data2, bool2=bool2, airports=airports)
+    else:
+        cursor = conn.cursor()
+        query = 'SELECT Name from airport'
+        cursor.execute(query)
+        airports = cursor.fetchall()
+        cursor.close()
+        customer = session['customer']
+        return render_template("Addinfo.html", user=customer, airports=airports)
 
 #DO NOW
 # #Adds on to previous function based on query
