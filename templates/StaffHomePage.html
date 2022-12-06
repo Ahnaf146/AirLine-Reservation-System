@@ -69,6 +69,7 @@
                 <td>{{line['Arrival_time']}}</td>
                 <td>{{line['Destination']}}</td>
                 <td>{{line['flight_status']}}</td>
+                <td><a href= "/editflight/{{line['flight_number']}}">Edit Flight</a></td>
             </tr>
             {%endfor %}
         </table>

@@ -395,6 +395,34 @@ def bookflight(flight_num):
         print(flight_num)
         return render_template('payment.html',flight_num=flight_num)
 
+@app.route('/editflight/<flight_num>', methods=['GET', 'POST'])
+def editflight(flight_num):
+    if request.method == "POST":
+        cursor = conn.cursor()
+        query = 'SELECT * FROM flight WHERE flight_number = %s'
+        cursor.execute(query, (flight_num))
+        data = cursor.fetchone()
+        status = request.form.get('status')
+
+        if(data):
+            ins = 'UPDATE flight SET flight_status = %s WHERE flight_number = %s'
+            cursor.execute(ins, (status, flight_num))
+            conn.commit()
+            cursor.close()
+            message = "Flight updated successfully"
+            return render_template('editflight.html', message=message, flights=data,flight_num=flight_num)
+        else:
+            message = "This flight does not exist"
+            return render_template("editflight.html", message=message, flights=data,flight_num=flight_num)
+    else:
+        cursor = conn.cursor()
+        query = 'SELECT * FROM flight WHERE flight_number = %s'
+        cursor.execute(query, (flight_num))
+        data = cursor.fetchone()
+        print(data)
+        cursor.close()
+        return render_template('editflight.html', flights=data,flight_num=flight_num)
+
 
 @app.route('/addinfo', methods= ['GET', 'POST'])
 def addinfo():

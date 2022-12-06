@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel= "stylesheet" href = "{{url_for('static', filename='css/login.css')}}">
+</head>
+<body>
+    {%if message %}
+    <h1 style= "text-align:center">{{message}}</h1>
+    {% endif %}
+
+
+    <h1 style= "text-align:center">Edit Flight</h1>
+
+    <table style= "text-align: center;">
+        <th>Flight Number</th>
+        <th>Departure Airport</th>
+        <th>Departure_date</th>
+        <th>Arrival Airport</th>
+        <th>Arrival Time</th>
+        <th>Destination</th>
+        <th>Flight status </th>
+    {% for line in flights%}
+        <tr>
+            <td>{{line['flight_number']}}</td>
+            <td>{{line['Departure_airport']}}</td>
+            <td>{{line['Departure_date']}}</td>
+            <td>{{line['Arrival_airport']}}</td>
+            <td>{{line['Arrival_time']}}</td>
+            <td>{{line['Destination']}}</td>
+            <td>{{line['flight_status']}}</td>
+        </tr>
+        {%endfor %}
+    </table>
+    
+    <div>
+        <form method = "POST" action="/editflight/{{flight_num}}">
+
+        
+        <label for="status">Status:</label>
+        <select  list="status" id="status" name="status" placeholder="Status" required>
+            <option value="on-time">on-time</option>
+            <option value="delayed">delayed</option>
+        </select>
+       
+        <a>
+        <input type="submit" value="Submit">
+        </a>
+
+        </form>
+    </div>
+
+
+    
+</body>
+</html>
