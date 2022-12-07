@@ -158,6 +158,7 @@ def register():
 #Load up any flights where id is the same 
 #And display them 
 def profile():
+    total_spending = 0
     customer = session['customer']
     cursor = conn.cursor()
     #Selects ticket information where username is same and orders it by time
@@ -165,6 +166,8 @@ def profile():
     cursor.execute(query, (customer))
     data1 = cursor.fetchall()
     cursor.close()
+    for dict in data1:
+        total_spending += dict['sold_price']
     if request.method == 'POST':
         cursor = conn.cursor()
         flight_id = request.form.get('flight_id')
@@ -182,12 +185,12 @@ def profile():
             cursor.execute(insert, (flight_id, name, rating, comments))
             conn.commit()
             cursor.close()
-            return render_template("MyProfile.html", info=data2, customer=customer, result =result)
+            return render_template("MyProfile.html", info=data2, customer=customer, result = result, tot_spend = total_spending)
         else:
             result = "Error. Flight not found"
-            return render_template("MyProfile.html", info=data2, customer=customer, result= result )
+            return render_template("MyProfile.html", info=data2, customer=customer, result= result, tot_spend = total_spending)
 
-    return render_template("MyProfile.html", info = data1, customer=customer)
+    return render_template("MyProfile.html", info = data1, customer=customer, tot_spend = total_spending)
 
 
 

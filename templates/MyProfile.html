@@ -31,9 +31,8 @@
     {%endfor%}
 
     <h1> Your spending </h1>
-    {% for line in info %}
-        <p> Sold Price: {{line['sold_price']}}</p>
-    {%  endfor %}
+        <h1>  $ {{tot_spend}} </h1>
+    
     
 
     <h1> Cancel trip </h1>
@@ -41,6 +40,7 @@
         <!-- Pop the flight from database
              Delete entry WHERE flight_info corresponds
         -->
+        
 
 
 
