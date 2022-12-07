@@ -5,13 +5,14 @@
 </head>
 <body>
     <ul>
-        <li> <a> {{customer}} </a></li>
+        <li> <a href= "/"> {{customer}}</a></li>
+        <li> <a href= "/addinfo"> Book flight </li>  </a>
+        <li> <a href= "/"> Cancel Flight </a></li>
         <li style="float:right"> <a href = "/logout"> Logout </a> </li>
-
     </ul>
     
     <form action= "/post" method= "POST">
-        <h1>  Welcome {{customer}} </h1>
+        <h1 style= "text-align:center"> Welcome, {{customer}} </h1>
     </form>
 
     <!-- Load up recent flight information Gather variables from app.py-->
@@ -19,8 +20,10 @@
     <!-- Nav header bar-->
 
     <div id= "content"> 
-    <h1> Welcome to your profile. Check out all your confirmed flights and other information</h1>
-    <h1> Your flights </h1>
+    <h3> Check out all your confirmed flights and other information</h3>
+
+    <section class = "banners"> 
+    <h1 style = "text-align: center"> Your confirmed flights </h1>
 
     {% for line in info %}
         <p> Ticket id: {{line['Ticket_id']}} </p>
@@ -29,15 +32,13 @@
 
 
     {%endfor%}
+    </section>
 
+    <section class = "banners"> 
     <h1> Your spending </h1>
         <h1>  $ {{tot_spend}} </h1>
+    </section>
     
-    
-
-    <h1> Cancel trip </h1>
-        <p> Which trip would you like to cancel? </p>
-        
 
         <!-- Pop the flight from database
              Delete entry WHERE flight_info corresponds
@@ -47,11 +48,11 @@
 
 
 
-    <h1> Give ratings </h1>
+    <h1 style= "text-align:center"> Give a rating! </h1>
 
     <div class="container">
         <form method = 'POST' action="/profile"> 
-      
+        
           
           <label for="flight_id">Flight id: </label>
           <input type="text" id = "flight_id" name="flight_id" placeholder= "Choose flight number"> 
@@ -73,7 +74,7 @@
           <label for="comments">Subject</label>
           <textarea id="comments" name="comments" placeholder="Write something.." style="height:200px"></textarea>
       
-          <input type="submit" value="Submit">
+          <input style= "justify-content: center" type="submit" value="Submit">
           {% if result %}
           <h1> {{result}} </h1>
           {% endif %}

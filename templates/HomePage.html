@@ -23,14 +23,14 @@
     <h1 style= "text-align:center">{{message}}</h1>
     {% endif %}
 
+    <div id = "introduction">
+        <h2> Welcome to AirlineReservation Inc. </h2>
+        <h3> Sign up or log in to proceed  </h3> 
+    </div> 
 
 
     <div id = "welcome">
-        <h2> Welcome to AirlineReservation Inc. </h2>
-        <h3> Sign up or log in to proceed  </h3> 
-        
         <h3> Search for your next flight</h3>
-
         <form action = " http://127.0.0.1:5000/result" method = "POST">
             <p> Leaving From: <input type = "text" name = "Leaving From" /></p>
             <p> Going To: <input type = "text" name = " Going To" /></p>
@@ -38,22 +38,19 @@
             <input type="date" id="Departing" name="Departing">
             <label for="Returning">Returning:</label>
             <input type="date" id="Returning" name="Returning">
-            <p><input type="submit" value="Submit" </p>
-            
-
-
-
+            <p><input type="submit" value="Submit"> </p>
         </form>
 
         <a href= "/addinfo">
             <button type="button" id = "homepage_button">Click here to book a flight</button> 
         </a>
 
-        <br> </br>
+        <br></br>
 
         <h1> Announcements </h1>
         <h1> Incoming flights  </h1>
-        <table>
+
+        <table id = "table"> 
             <th>Flight Number</th>
             <th>Departure Airport</th>
             <th>Departure_date</th>

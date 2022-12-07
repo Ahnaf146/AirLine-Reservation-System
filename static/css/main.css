@@ -6,6 +6,20 @@ body {
     background-color: skyblue;
     color: white;
 }
+#introduction {
+  text-align:center;
+  width: 100%;
+  padding:60px 0;
+  text-align: center;
+  background: #33cccc;
+  color: white;
+}
+
+table {
+  margin-left: 0;
+  margin-right: 0;
+
+}
 
 #homepage_button {
   background-color: #4CAF50; /* Green */
@@ -53,4 +67,8 @@ ul {
   
   .active {
     background-color: #04AA6D;
+  }
+
+  .organize_info {
+    padding: 25px 50px 75px 100px;
   }

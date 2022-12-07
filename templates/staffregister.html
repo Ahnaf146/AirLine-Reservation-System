@@ -4,6 +4,10 @@
     <link rel= "stylesheet" href = "{{ url_for('static', filename='css/login.css')}}">
 </head>
 <body>
+    <ul>
+        <li> <a href= "/">Home </a> </li>
+        <li style= "float:right"> <a href= "/register"> Customer register </a></li>
+    </ul>
     <div>
         <h1> Register as a staff member </h1>
         {%if error %}

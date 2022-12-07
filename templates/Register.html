@@ -4,7 +4,11 @@
     <link rel= "stylesheet" href = "{{url_for('static', filename='css/login.css')}}">
 </head>
 <body>
-    <h1 style= "text-align:center">Customer Registration</h1>
+    <ul> 
+        <li> <a href= "/"> Home </a></li>
+        <li style= "float:right"> <a href= "/staffregister"> Register as staff! </a></li>
+    </ul>
+    <h1 style= "text-align:center">Register as a new customer</h1>
     
     <div>
         <form method = "POST" action="/register">
@@ -33,15 +37,16 @@
             <label for="State">State</label>
             <input type="text" id="State" name="State" placeholder="State" required>
         
-            <label for="passport">passport</label>
+            <label for="passport">Passport</label>
             <input type="text" id="passport" name="passport" placeholder="passport" required>
-            
-
-            <p>Already have an account? <a href = "Login.html" > Log in</a></p>
 
             <a href = "/">
-            <input type="submit" value="Submit">
+            <input id= "button" type="submit" value="Submit">
             </a>
+            {% if error %}
+                <h1> {{error}} </h1>
+            {% endif %}
+            <p>Already have an account? <a href = "/login" > Log in</a></p>
 
         </form>
     </div>
