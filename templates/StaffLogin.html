@@ -5,6 +5,12 @@
     <link rel= "stylesheet" href = "{{ url_for('static', filename='css/login.css')}}">
 </head>
 <body>
+    <ul>
+        <li> <a href= "/"> Home </a></li>
+        <li style="float:right"> <a href = "/login"> Customer login </a> </li>
+    </ul>
+
+
 <h1> Login as Airline Staff</h1>
 <form method = "POST"> 
     <div class = "container"> 
@@ -13,7 +19,7 @@
         <strong> <label for="password">password:</label> <br> </strong>
         <input type="text" name="password" required/>
         <a>
-            <input type="submit"/>
+            <input id = "button" type="submit"/>
         <!-- <a href= '/staffprofile'>
         <button type="submit" form="form" value="Submit">Submit</button> -->
         </a>
