@@ -5,13 +5,13 @@
 </head>
 <body>
     <ul>
-        <li> <a> {{user}} </a></li>
+        <li> <a> {{customer}} </a></li>
         <li style="float:right"> <a href = "/logout"> Logout </a> </li>
 
     </ul>
     
     <form action= "/post" method= "POST">
-        <h1>  Welcome {{user}} </h1>
+        <h1>  Welcome {{customer}} </h1>
     </form>
 
     <!-- Load up recent flight information Gather variables from app.py-->
@@ -48,21 +48,23 @@
     <h1> Give ratings </h1>
 
     <div class="container">
-        <form action="action_page.php">
+        <form method = 'POST' action="/profile"> 
       
-          <label for="fname">First Name</label>
-          <input type="text" id="fname" name="firstname" placeholder="Your name..">
-      
-          <label for="lname">Last Name</label>
-          <input type="text" id="lname" name="lastname" placeholder="Your last name..">
+          
+          <label for="flight_id">Flight id: </label>
+          <input type="text" id = "flight_id" name="flight_id" placeholder= "Choose flight number"> 
+
+
+          <label for="fname">Name</label>
+          <input type="text" id="fname" name="name" placeholder="Your name..">.
       
           <label for="rating">Rating</label>
           <select id="rating" name="rating">
-            <option value="five">⭐⭐⭐⭐⭐</option>
-            <option value="four">⭐⭐⭐⭐</option>
-            <option value="three">⭐⭐⭐</option>
-            <option value="two"> ⭐⭐ </option>
-            <option value="one">⭐</option>
+            <option value={{5}}>⭐⭐⭐⭐⭐</option>
+            <option value={{4}}>⭐⭐⭐⭐</option>
+            <option value={{3}}>⭐⭐⭐</option>
+            <option value={{2}}> ⭐⭐ </option>
+            <option value={{1}}>⭐</option>
 
           </select>
       
@@ -70,6 +72,9 @@
           <textarea id="comments" name="comments" placeholder="Write something.." style="height:200px"></textarea>
       
           <input type="submit" value="Submit">
+          {% if result %}
+          <h1> {{result}} </h1>
+          {% endif %}
 
         </form>
       </div>

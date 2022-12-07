@@ -12,7 +12,7 @@ conn = pymysql.connect(host='localhost',
                        password='root',
                        db='Air Ticket Reservation System',
                        charset='utf8mb4',
-                       port = 3306,
+                       port = 8889,
                        cursorclass=pymysql.cursors.DictCursor)
 
 # mysql = MySQL(app)
@@ -154,19 +154,40 @@ def register():
 
 
 #USER PROFILE
-@app.route('/profile')
+@app.route('/profile', methods = ['GET', 'POST'])
 #Load up any flights where id is the same 
 #And display them 
 def profile():
-
-    user = session['username']
+    customer = session['customer']
     cursor = conn.cursor()
     #Selects ticket information where username is same and orders it by time
     query = 'SELECT Ticket_id, flight_number, sold_price FROM ticket NATURAL JOIN Customer WHERE Customer.EMAIL = %s AND Customer.EMAIL = ticket.EMAIL'
-    cursor.execute(query, (user))
+    cursor.execute(query, (customer))
     data1 = cursor.fetchall()
     cursor.close()
-    return render_template("MyProfile.html", info = data1, user=user)
+    if request.method == 'POST':
+        cursor = conn.cursor()
+        flight_id = request.form.get('flight_id')
+        name = request.form.get('name')
+        rating = request.form.get('rating')
+        comments = request.form.get('comments')
+        query1 = 'SELECT flight_number from Ticket where flight_number = %s'
+        cursor.execute(query1, flight_id )
+        data2 = cursor.fetchall()
+        result = None
+        print(data2)
+        if data2:
+            result = "Thank you for your review!"
+            insert = 'Insert INTO customer_review VALUES(%s, %s, %s, %s)'
+            cursor.execute(insert, (flight_id, name, rating, comments))
+            conn.commit()
+            cursor.close()
+            return render_template("MyProfile.html", info=data2, customer=customer, result =result)
+        else:
+            result = "Error. Flight not found"
+            return render_template("MyProfile.html", info=data2, customer=customer, result= result )
+
+    return render_template("MyProfile.html", info = data1, customer=customer)
 
 
 
