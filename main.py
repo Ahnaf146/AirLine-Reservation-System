@@ -191,7 +191,6 @@ def profile():
 
 
 
-
 #STAFF INFO 
 
 #STAFF Profile
@@ -203,7 +202,10 @@ def staffprofile():
     query = 'SELECT * FROM FLIGHT NATURAL JOIN AirlineStaff WHERE AirlineStaff.Airline_name = Flight.Airline_name'
     cursor.execute(query)
     data1 = cursor.fetchall()
-    return render_template("staffprofile.html", staffuser = username, staff_flights=data1)
+    query = 'SELECT * from customer_review'
+    cursor.execute(query)
+    data2 = cursor.fetchall()
+    return render_template("staffprofile.html", staffuser = username, staff_flights=data1, reviews=data2)
 
 @app.route('/staffview')
 #View flight ratings, frequent customers, reports, earned revenue
@@ -458,8 +460,8 @@ def addinfo():
         departure_date = request.form.get('departure_date')
         arrival_airport = request.form.get('arrival_airport')
         return_date = request.form.get('return_date')
-        bool1 = True;
-        bool2 = True;
+        bool1 = True
+        bool2 = True
         if return_date == None:
             cursor = conn.cursor()
             query = 'SELECT * FROM flight WHERE departure_airport = %s AND departure_date = %s AND arrival_airport = %s'
