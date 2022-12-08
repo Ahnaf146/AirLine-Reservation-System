@@ -18,23 +18,6 @@
 
     <h1> Welcome to the staff profile {{staffuser}} </h1>
 
-    <h1> View your scheduled flights</h1>
-    {% for line in staff_flights%}
-        <h1> Departure </h1>
-        <p> {{line['Departure_date']}} </p>
-        <p> {{line['flight_number']}} </p>
-        <p> {{line['Departure_airport']}}</p>
-        
-        <h1> Arrival </h1>
-        <p> {{line['Arrival_date']}}</p>
-        <p> {{line['Arrival_airport']}} </p>
-    {% endfor %}
-
-    <!-- Subnavbar section: Edit-->
-    <h1> Create new flights </h1>
-    <h1> Change status for flights</h1>
-    <h1> Add airport in the new system </h1> 
-
     <!-- Subnavbar section: View-->
     <form method = "POST" action="/staffprofile">
     <h1> View Flight Ratings </h1>
@@ -102,13 +85,13 @@
     </form>
 
     <h1> View reports </h1>
-    <h1> Yearly Tickets Sold: {{count_year}}</h1>
-    <h1> Monthly Tickets Sold: {{count_month}}</h1>
+    <h3> Yearly Tickets Sold: {{count_year}}</h3>
+    <h3> Monthly Tickets Sold: {{count_month}}</h3>
     <!-- TABLE HERE -->
 
     <h1> View earned revenue</h1> 
-    <h1> Yearly Revenue: {{total_year}}</h1>
-    <h1> Monthly Revenue: {{total_month}}</h1>
+    <h3> Yearly Revenue: {{total_year}}</h3>
+    <h3> Monthly Revenue: {{total_month}}</h3>
 
 
 </body>
