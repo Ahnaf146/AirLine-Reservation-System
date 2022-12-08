@@ -12,7 +12,7 @@ conn = pymysql.connect(host='localhost',
                        password='root',
                        db='Air Ticket Reservation System',
                        charset='utf8mb4',
-                       port = 8889,
+                       port = 3306,
                        cursorclass=pymysql.cursors.DictCursor)
 
 # mysql = MySQL(app)
@@ -197,18 +197,66 @@ def profile():
 #STAFF INFO 
 
 #STAFF Profile
-@app.route('/staffprofile')
+@app.route('/staffprofile', methods = ['GET', 'POST'])
 def staffprofile():
     username = session['staff'] 
     cursor = conn.cursor()
     #Selects all of airline staff flights
-    query = 'SELECT * FROM FLIGHT NATURAL JOIN AirlineStaff WHERE AirlineStaff.Airline_name = Flight.Airline_name'
+    # query = 'SELECT * FROM FLIGHT NATURAL JOIN AirlineStaff WHERE AirlineStaff.Airline_name = Flight.Airline_name'
+    # cursor.execute(query)
+    # staff_flights = cursor.fetchall()
+    # query = 'SELECT * from customer_review'
+    # cursor.execute(query)
+    # reviews = cursor.fetchall()
+    query = 'SELECT Airline_name FROM airlineStaff WHERE username = %s'
+    cursor.execute(query, (username))
+    airline = cursor.fetchone()
+    query = 'SELECT * FROM flight WHERE airline_name = %s'
+    cursor.execute(query, (airline['Airline_name']))
+    flights = cursor.fetchall()
+    query = 'SELECT Email FROM ticket GROUP BY Email ORDER BY COUNT(*) DESC LIMIT 1'
     cursor.execute(query)
-    data1 = cursor.fetchall()
-    query = 'SELECT * from customer_review'
-    cursor.execute(query)
-    data2 = cursor.fetchall()
-    return render_template("staffprofile.html", staffuser = username, staff_flights=data1, reviews=data2)
+    email = cursor.fetchall()
+    query = 'SELECT Name FROM customer WHERE email = %s'
+    cursor.execute(query, (email[0]['Email']))
+    mostfrequent = cursor.fetchone()
+    query = 'SELECT SUM(sold_price) FROM ticket WHERE purchase_date > DATE_ADD(NOW(), INTERVAL -1 MONTH) AND Airline_name = %s'
+    cursor.execute(query, (airline['Airline_name']))
+    total_year = cursor.fetchone()
+    query = 'SELECT SUM(sold_price) FROM ticket WHERE purchase_date > DATE_ADD(NOW(), INTERVAL -1 YEAR) AND Airline_name = %s'
+    cursor.execute(query, (airline['Airline_name']))
+    total_month = cursor.fetchone()
+    query = 'SELECT COUNT(*) FROM ticket WHERE purchase_date > DATE_ADD(NOW(), INTERVAL -1 YEAR) AND Airline_name = %s'
+    cursor.execute(query, (airline['Airline_name']))
+    count_year = cursor.fetchone()
+    query = 'SELECT COUNT(*) FROM ticket WHERE purchase_date > DATE_ADD(NOW(), INTERVAL -1 MONTH) AND Airline_name = %s'
+    cursor.execute(query, (airline['Airline_name']))
+    count_month = cursor.fetchone()
+    if request.method == 'POST':
+        reviews = None
+        customerflights = None
+        flightid_rating = None
+        email = None
+        averagerating = None
+        flightid_rating = request.form.get('flightid_rating')
+        if flightid_rating:
+            query = 'SELECT * FROM customer_review WHERE flight_id = %s'
+            cursor.execute(query, (flightid_rating))
+            reviews = cursor.fetchall()
+            print(reviews)
+            # get avrage rating for flight
+            query = 'SELECT AVG(rating) FROM customer_review WHERE flight_id = %s'
+            cursor.execute(query, (flightid_rating))
+            averagerating = cursor.fetchall()
+        email = request.form.get('email')
+        if email:
+            query = 'SELECT * FROM ticket NATURAL JOIN flight WHERE ticket.Email = %s AND flight.Airline_name = %s AND ticket.flight_number = flight.flight_number'
+            cursor.execute(query, (email, airline['Airline_name']))
+            customerflights = cursor.fetchall()
+        
+        return render_template("staffprofile.html", staffuser = username,averagerating=averagerating,  reviews=reviews, flights=flights,mostfrequent=mostfrequent,customerflights=customerflights,total_year=total_year,total_month=total_month,count_year=count_year,count_month=count_month)
+    else:
+        return render_template("staffprofile.html", staffuser = username,flights=flights,mostfrequent=mostfrequent,total_month=total_month,total_year=total_year,count_year=count_year,count_month=count_month)
 
 @app.route('/staffview')
 #View flight ratings, frequent customers, reports, earned revenue
@@ -407,7 +455,7 @@ def bookflight(flight_num):
             name_on_card = request.form.get('card_name')
             exp_date = request.form.get('exp_date')
             cursor = conn.cursor()
-            ins = 'INSERT INTO ticket VALUES(%s, %s, %s, %s, %s, %s, %s, %s)'
+            ins = 'INSERT INTO ticket VALUES(%s, %s, %s, %s, %s, %s, %s, %s, NOW())'
             print(ticket_id,email,flight_num,price,card_type,card_num,name_on_card,exp_date)
             cursor.execute(ins, (ticket_id,email,flight_num,price,card_type,card_num,name_on_card,exp_date))
             conn.commit()

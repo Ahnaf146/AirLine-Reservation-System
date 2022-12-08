@@ -36,16 +36,80 @@
     <h1> Add airport in the new system </h1> 
 
     <!-- Subnavbar section: View-->
+    <form method = "POST" action="/staffprofile">
     <h1> View Flight Ratings </h1>
-        <div>
+
+    <label for="flightid_rating">Choose Flight ID: </label>
+            <select name = "flightid_rating" id="flightid_rating" required>
+             {% for line in flights %}
+                <option value="{{line['flight_number']}}"> {{line['flight_number']}}</option>
+            {% endfor %}
+            </select>
+
+            <a>
+                <input type="submit" value="Submit">
+            </a>
+        {% if reviews%}
             <p> Flight id: {{reviews[0]['flight_id']}} </p>
-            <p> Posted by: {{reviews[0]['name']}} </p>
-            <p> Rating: {{reviews[0]['rating']}} stars</p>
-            <p> Review: {{reviews[0]['review']}} </p>
-        </div>
-    <h1> View frequent customers </h1>
+            <p> Average Rating: {{averagerating}} </p>
+            <div>
+            {% for line in reviews %}
+            <table style= "text-align: center;">
+                <th>Name</th>
+                <th>Rating</th>
+                <th>Review</th>
+                <tr>
+                    <td>{{line['name']}}</td>
+                    <td>{{line['rating']}}</td>
+                    <td>{{line['review']}}</td>
+                </tr>
+            </table>
+            </div>
+            {% endfor %}
+        {% endif %}
+    </form>
+
+    <h1> Most frequent customer within the last year: {{mostfrequent["Name"]}}</h1>
+    <form method = "POST" action="/staffprofile">
+        <h1> Search Customer flight </h1>
+        <label for="email">Email</label>
+        <input type="text" id="email" name="email" placeholder="Email" > 
+        <a>
+            <input type="submit" value="Submit">
+        </a>
+        {% if customerflights%}
+            <table style= "text-align: center;">
+                <th>Flight Number</th>
+                <th>Departure Airport</th>
+                <th>Departure_date</th>
+                <th>Arrival Airport</th>
+                <th>Arrival Time</th>
+                <th>Flight status </th>
+                {% for line in customerflights %}
+                <tr>
+                    <td>{{line['flight_number']}}</td>
+                    <td>{{line['Departure_airport']}}</td>
+                    <td>{{line['Departure_date']}}</td>
+                    <td>{{line['Arrival_airport']}}</td>
+                    <td>{{line['Arrival_time']}}</td>
+                    <td>{{line['flight_status']}}</td>
+                </tr>
+                {% endfor %}
+            </table>
+            </div>
+
+        {% endif %}
+    </form>
+
     <h1> View reports </h1>
+    <h1> Yearly Tickets Sold: {{count_year}}</h1>
+    <h1> Monthly Tickets Sold: {{count_month}}</h1>
+    <!-- TABLE HERE -->
+
     <h1> View earned revenue</h1> 
+    <h1> Yearly Revenue: {{total_year}}</h1>
+    <h1> Monthly Revenue: {{total_month}}</h1>
+
 
 </body>
 </html>
