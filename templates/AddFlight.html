@@ -1,9 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel= "stylesheet" href = "{{url_for('static', filename='css/login.css')}}">
+    <link rel= "stylesheet" href = "{{url_for('static', filename='css/main.css')}}">
 </head>
 <body>
+    <ul> 
+        <li> <a href= "/"> Home </a></li>
+        <li style= "float:right"> <a href= "/logout"> Logout</a></li>
+    </ul>
+
     {%if message %}
     <h1 style= "text-align:center">{{message}}</h1>
     {% endif %}
@@ -13,26 +18,27 @@
     
     <div>
         <form method = "POST" action="/addflight">
-
-        <label for="price">Price</label>
-        <input type="text" id="price" name="price" placeholder="Price" required>
-
+        <div class = "extraspace">  
         <label for="departure_airport">Departure Airport:</label>
         <select  list="departure_airport" id="departure_airport" name="departure_airport" placeholder="Departure Airport" required>
             {%for line in airports%}
-            <option value={{line['Name']}}>{{line['Name']}}</option>
+            <option value="{{line['Name']}}">{{line['Name']}}</option>
             {%endfor%}
         </select>
         <label for="departure_date">Departure Date:</label>
         <input type="date" id="departure_date" name="departure_date" placeholder="Departure Date" required>
 
         <label for="departure_time">&nbsp Departure Time:</label>
+
         <input type="time" id="departure_time" name="departure_time" placeholder="Departure Time" required>
-        <div></div><div></div>
+
+        </div> 
+
+        <div class = "extraspace"> 
         <label for="arrival_airport">Arrival Airport:</label>
         <select  list="arrival_airport" id="arrival_airport" name="arrival_airport" placeholder="Arrival Airport" required>
             {%for line in airports%}
-            <option value={{line['Name']}}>{{line['Name']}}</option>
+            <option value="{{line['Name']}}">{{line['Name']}}</option>
             {%endfor%}
         </select>
 
@@ -41,11 +47,15 @@
         
         <label for="arrival_time">&nbsp Arrival Time:</label>
         <input type="time" id="arrival_time" name="arrival_time" placeholder="Arrival Time" required>
-        <div></div><div></div>
+
+        </div> 
+
+        
+        <div class = "extraspace">
         <label for="airplanes">Airplane ID:</label>
         <select  list="airplanes" id="airplanes" name="airplanes" placeholder="Airplanes" required>
             {%for line in airplanes%}
-            <option value={{line['Airplane_id']}}>{{line['Airplane_id']}}</option>
+            <option value="{{line['Airplane_id']}}">{{line['Airplane_id']}}</option>
             {%endfor%}
         </select>
         
@@ -58,9 +68,12 @@
         <label for="airline_name">Airline Name:</label>
         <select  list="airline_name" id="airline_name" name="airline_name" placeholder="Airline Name" required>
             {%for line in airlines%}
-            <option value={{line['Airline_name']}}>{{line['Airline_name']}}</option>
+            <option value="{{line['Airline_name']}}">{{line['Airline_name']}}</option>
             {%endfor%}
         </select>
+
+        <label for="price">Price</label>
+        <input type="text" id="price" name="price" placeholder="Price" required>
 
         <a>
         <input type="submit" value="Submit">

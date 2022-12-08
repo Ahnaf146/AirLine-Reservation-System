@@ -500,27 +500,23 @@ def editflight(flight_num):
 @app.route('/cancelflight', methods = ['GET', 'POST'])
 def cancelflight():
     customer = session['customer']
+    cursor = conn.cursor()
+    query = 'SELECT * FROM Flight NATURAL JOIN Ticket WHERE Flight.flight_number = Ticket.flight_number and Ticket.Email = %s' 
+    cursor.execute(query, (customer))
+    flight_info = cursor.fetchall()
+    cursor.close()
     #Remove information 
     if request.method == "POST":
-        customer = session['customer']
-        cursor = conn.cursor()
-        query = 'SELECT * FROM Flights NATURAL JOIN tickets WHERE Flights.flight_number = ticket.flight_number and ticket.Email = %s' 
-        cursor.execute(query, (customer))
-        flight_info = cursor.fetchall()
-        cursor.close()
         ticket = request.form.get('ticket_id')
-        if ticket in flight_info['Ticket_id']:
-            cursor = conn.cursor()
-            query2 = 'DELETE FROM Ticket WHERE Ticket = %s' 
-            cursor.execute(query2, (ticket))
-            cursor.close()
-            confirmation = "Successfully cancelled flight"
-            return render_template('CancelFlight.html', flights = flight_info, user = customer, confirm = confirmation)
-        else:
-            error = "Error. Ticket id is not valid"
-            return render_template('CancelFlight.html', flights= flight_info, user= customer )
-
-    return render_template('CancelFlight.html', user = customer)
+        print(ticket)
+        cursor = conn.cursor()
+        query2 = 'DELETE FROM Ticket WHERE Ticket_id = %s' 
+        cursor.execute(query2, (ticket))
+        conn.commit()
+        cursor.close()
+        confirmation = "Successfully cancelled flight"
+        return render_template('CancelFlight.html', flights = flight_info, user = customer, confirm = confirmation)
+    return render_template('CancelFlight.html', flights = flight_info,user = customer)
 
 
 

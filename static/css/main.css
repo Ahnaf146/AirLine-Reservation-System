@@ -21,6 +21,11 @@ table {
 
 }
 
+#arrangement { 
+  border-style: solid;
+
+}
+
 #homepage_button {
   background-color: #4CAF50; /* Green */
   border: none;

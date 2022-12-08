@@ -8,8 +8,10 @@
         <li style= "float:right"> <a href= "/logout"> Logout </a></li>
     </ul>
 <body>
+
     <h1> Choose which flight to cancel (Enter the flight number) </h1>
     {% for line in flights %}
+    <div id = "arrangement"> 
     <p> Email: {{line['Email']}} </p>
     <p> Ticket id: {{line['Ticket_id']}} </p>
     <p> Flight number: {{line['flight_number']}}</p>
@@ -18,22 +20,25 @@
     <p> Arrival Airport: {{line['Arrival_airport']}} </p>
     <p> Arrival Time: {{line['Arrival_time']}} </p>
     <p> Sold Price: {{line['sold_price']}}</p>
+    </div>
     {%endfor%}
+
+
     <form method = "POST" action = '/cancelflight'> 
+
         <label for= "Ticket_id"> Ticket ID:</label>
-        <input type="text" id = "ticket_id" name = "ticket_id" placeholder = "Enter Ticket id" required>
+        <select name = "ticket_id" id = "ticket_id" required> 
+            {% for ticket in flights %}
+                <option value = "30507"> {{ticket['Ticket_id']}} </option>
+            {% endfor %}
+        <a>
+            <input type= "submit" value = "Submit">
+        </a>
     </form>
-    <a>
-    <input type= "submit" value = "Submit">
-    </a>
+
     {%if confirm %}
         <h1> {{confirm}} </h1>
     {% endif %}
 
-
-    {%if error%}
-        <h1> {{error}} </h1>
-    {% endif %}
-    
 </body>
 </html>
