@@ -12,7 +12,7 @@ conn = pymysql.connect(host='localhost',
                        password='root',
                        db='Air Ticket Reservation System',
                        charset='utf8mb4',
-                       port = 3306,
+                       port = 8889,
                        cursorclass=pymysql.cursors.DictCursor)
 
 # mysql = MySQL(app)
@@ -496,6 +496,32 @@ def editflight(flight_num):
         print(data)
         cursor.close()
         return render_template('editflight.html', flights=data,flight_num=flight_num)
+
+@app.route('/cancelflight', methods = ['GET', 'POST'])
+def cancelflight():
+    customer = session['customer']
+    #Remove information 
+    if request.method == "POST":
+        customer = session['customer']
+        cursor = conn.cursor()
+        query = 'SELECT * FROM Flights NATURAL JOIN tickets WHERE Flights.flight_number = ticket.flight_number and ticket.Email = %s' 
+        cursor.execute(query, (customer))
+        flight_info = cursor.fetchall()
+        cursor.close()
+        ticket = request.form.get('ticket_id')
+        if ticket in flight_info['Ticket_id']:
+            cursor = conn.cursor()
+            query2 = 'DELETE FROM Ticket WHERE Ticket = %s' 
+            cursor.execute(query2, (ticket))
+            cursor.close()
+            confirmation = "Successfully cancelled flight"
+            return render_template('CancelFlight.html', flights = flight_info, user = customer, confirm = confirmation)
+        else:
+            error = "Error. Ticket id is not valid"
+            return render_template('CancelFlight.html', flights= flight_info, user= customer )
+
+    return render_template('CancelFlight.html', user = customer)
+
 
 
 @app.route('/addinfo', methods= ['GET', 'POST'])

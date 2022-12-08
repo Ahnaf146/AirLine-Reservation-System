@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel= "stylesheet" href = "{{url_for('static', filename='css/main.css')}}">
+</head>
+    <ul> 
+        <li> <a href= "/profile"> {{user}} </li> </a>
+        <li style= "float:right"> <a href= "/logout"> Logout </a></li>
+    </ul>
+<body>
+    <h1> Choose which flight to cancel (Enter the flight number) </h1>
+    {% for line in flights %}
+    <p> Email: {{line['Email']}} </p>
+    <p> Ticket id: {{line['Ticket_id']}} </p>
+    <p> Flight number: {{line['flight_number']}}</p>
+    <p> Departure Date: {{line['Departure_date']}}</p>
+    <p> Departure Airport: {{line['Departure_airport']}}</p>
+    <p> Arrival Airport: {{line['Arrival_airport']}} </p>
+    <p> Arrival Time: {{line['Arrival_time']}} </p>
+    <p> Sold Price: {{line['sold_price']}}</p>
+    {%endfor%}
+    <form method = "POST" action = '/cancelflight'> 
+        <label for= "Ticket_id"> Ticket ID:</label>
+        <input type="text" id = "ticket_id" name = "ticket_id" placeholder = "Enter Ticket id" required>
+    </form>
+    <a>
+    <input type= "submit" value = "Submit">
+    </a>
+    {%if confirm %}
+        <h1> {{confirm}} </h1>
+    {% endif %}
+
+
+    {%if error%}
+        <h1> {{error}} </h1>
+    {% endif %}
+    
+</body>
+</html>
