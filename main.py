@@ -106,7 +106,8 @@ def logout():
     if "staff" in session:
         session.pop('staff')
     message = 'You have been logged out'
-    return render_template('HomePage.html', message=message)
+    
+    return redirect(url_for('home', message=message))
 
 
 
@@ -435,6 +436,9 @@ def bookflight(flight_num):
         query = 'SELECT Base_price FROM flight WHERE flight_number = %s'
         cursor.execute(query, (flight_num))
         data = cursor.fetchone()
+        query = 'SELECT Airline_name FROM flight WHERE flight_number = %s'
+        cursor.execute(query, (flight_num))
+        airline = cursor.fetchone()
         if(data):
             # redirect to payment page
             email = session['customer']
@@ -455,9 +459,9 @@ def bookflight(flight_num):
             name_on_card = request.form.get('card_name')
             exp_date = request.form.get('exp_date')
             cursor = conn.cursor()
-            ins = 'INSERT INTO ticket VALUES(%s, %s, %s, %s, %s, %s, %s, %s, NOW())'
-            print(ticket_id,email,flight_num,price,card_type,card_num,name_on_card,exp_date)
-            cursor.execute(ins, (ticket_id,email,flight_num,price,card_type,card_num,name_on_card,exp_date))
+            ins = 'INSERT INTO ticket VALUES(%s, %s, %s, %s, %s, %s, %s, %s, NOW(),%s)'
+            print(ticket_id,email,flight_num,price,card_type,card_num,name_on_card,exp_date,airline['Airline_name'])
+            cursor.execute(ins, (ticket_id,email,flight_num,price,card_type,card_num,name_on_card,exp_date,airline['Airline_name']))
             conn.commit()
             cursor.close()
             message = "Flight booked successfully"
@@ -562,8 +566,11 @@ def addinfo():
         cursor.execute(query)
         airports = cursor.fetchall()
         cursor.close()
-        customer = session['customer']
-        return render_template("Addinfo.html", user=customer, airports=airports)
+        if 'customer' in session:
+            customer = session['customer']
+            return render_template("Addinfo.html", user=customer, airports=airports)
+        else:
+            return render_template("Addinfo.html", airports=airports)
 
 #DO NOW
 # #Adds on to previous function based on query

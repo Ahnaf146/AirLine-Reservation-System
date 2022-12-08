@@ -89,7 +89,9 @@
                 <td>{{line['Arrival_time']}}</td>
                 <td>{{line['Destination']}}</td>
                 <td>{{line['flight_status']}}</td>
+                {% if user %}
                 <td><a href= "/bookflight/{{line['flight_number']}}">Click here to book this flight</a></td>
+                {% endif %}
             </tr>
             {%endfor %}
         </table>
