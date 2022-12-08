@@ -12,7 +12,7 @@ conn = pymysql.connect(host='localhost',
                        password='root',
                        db='Air Ticket Reservation System',
                        charset='utf8mb4',
-                       port = 8889,
+                       port = 3306,
                        cursorclass=pymysql.cursors.DictCursor)
 
 # mysql = MySQL(app)
@@ -224,19 +224,18 @@ def staffprofile():
     query = "SELECT SUM(sold_price) AS 'total_year'  FROM ticket WHERE purchase_date > DATE_ADD(NOW(), INTERVAL -1 MONTH) AND Airline_name = %s"
     cursor.execute(query, (airline['Airline_name']))
     total_year = cursor.fetchone()
-    totalyear = total_year[0]['total_year']
+    totalyear = total_year['total_year']
     query = "SELECT SUM(sold_price) AS 'total_month' FROM ticket WHERE purchase_date > DATE_ADD(NOW(), INTERVAL -1 YEAR) AND Airline_name = %s"
     cursor.execute(query, (airline['Airline_name']))
     total_month = cursor.fetchone()
-    totalmonth = total_month[0]['total_month']
-    query = "SELECT COUNT(*) FROM ticket AS 'count_year' WHERE purchase_date > DATE_ADD(NOW(), INTERVAL -1 YEAR) AND Airline_name = %s"
+    totalmonth = total_month['total_month']
+    query = "SELECT COUNT(*) AS 'count_year'  FROM ticket WHERE purchase_date > DATE_ADD(NOW(), INTERVAL -1 YEAR) AND Airline_name = %s"
     cursor.execute(query, (airline['Airline_name']))
     count_year = cursor.fetchone()
-    countyear = count_year[0]['count_year']
-    query = "SELECT COUNT(*) FROM ticket AS 'count_month' WHERE purchase_date > DATE_ADD(NOW(), INTERVAL -1 MONTH) AND Airline_name = %s"
+    query = "SELECT COUNT(*) AS 'count_month' FROM ticket WHERE purchase_date > DATE_ADD(NOW(), INTERVAL -1 MONTH) AND Airline_name = %s"
     cursor.execute(query, (airline['Airline_name']))
     count_month = cursor.fetchone()
-    countmonth = count_month[0]['count_month']
+
 
     if request.method == 'POST':
         reviews = None
@@ -251,10 +250,9 @@ def staffprofile():
             reviews = cursor.fetchall()
             print(reviews)
             # get avrage rating for flight
-            query = "SELECT AVG(rating) as 'average_rating' FROM customer_review WHERE flight_id = %s"
+            query = "SELECT AVG(rating) AS 'averagerating' FROM customer_review WHERE flight_id = %s"
             cursor.execute(query, (flightid_rating))
-            averagerating = cursor.fetchall()
-            average_rating = averagerating[0]['average_rating']
+            averagerating = cursor.fetchone()
     
         email = request.form.get('email')
         if email:
@@ -262,7 +260,7 @@ def staffprofile():
             cursor.execute(query, (email, airline['Airline_name']))
             customerflights = cursor.fetchall()
         
-        return render_template("staffprofile.html", staffuser = username, averagerating=average_rating,  reviews=reviews, flights=flights,mostfrequent=mostfrequent,customerflights=customerflights,total_year=totalyear,total_month=totalmonth,count_year=countyear,count_month=countmonth)
+        return render_template("staffprofile.html", staffuser = username, averagerating=averagerating,  reviews=reviews, flights=flights,mostfrequent=mostfrequent,customerflights=customerflights,total_year=total_year,total_month=total_month,count_year=count_year,count_month=count_month)
     else:
         return render_template("staffprofile.html", staffuser = username,flights=flights,mostfrequent=mostfrequent,total_month=total_month,total_year=total_year,count_year=count_year,count_month=count_month)
 

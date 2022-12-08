@@ -34,7 +34,7 @@
             </a>
         {% if reviews%}
             <p> Flight id: {{reviews[0]['flight_id']}} </p>
-            <p> Average Rating: {{averagerating}} </p>
+            <p> Average Rating: {{averagerating.averagerating}} </p>
             <div>
             {% for line in reviews %}
             <table style= "text-align: center;">
@@ -85,13 +85,13 @@
     </form>
 
     <h1> View reports </h1>
-    <h3> Yearly Tickets Sold: {{count_year}}</h3>
-    <h3> Monthly Tickets Sold: {{count_month}}</h3>
+    <h3> Yearly Tickets Sold: {{count_year.count_year}}</h3>
+    <h3> Monthly Tickets Sold: {{count_month.count_month}}</h3>
     <!-- TABLE HERE -->
 
     <h1> View earned revenue</h1> 
-    <h3> Yearly Revenue: {{total_year}}</h3>
-    <h3> Monthly Revenue: {{total_month}}</h3>
+    <h3> Yearly Revenue: {{total_year.total_year}}</h3>
+    <h3> Monthly Revenue: {{total_month.total_month}}</h3>
 
 
 </body>
