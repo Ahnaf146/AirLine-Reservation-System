@@ -9,7 +9,25 @@
         <li style="float:right"> <a href = "/logout"> Logout </a> </li>
 
     </ul>
+    <table id = "table"> 
+        <th>Flight Number</th>
+        <th>Departure Airport</th>
+        <th>Departure_date</th>
+        <th>Arrival Airport</th>
+        <th>Arrival Time</th>
+        <th>Destination</th>
+        <th>Flight status </th>
+        
+        <tr>
+            <td>{{flight['flight_number']}}</td>
+            <td>{{flight['Departure_airport']}}</td>
+            <td>{{flight['Departure_date']}}</td>
+            <td>{{flight['Arrival_airport']}}</td>
+            <td>{{flight['Arrival_time']}}</td>
+            <td>{{flight['flight_status']}}</td>
 
+        </tr>
+    </table>
     <h1 style= "text-align:center"> Enter Payment Details</h1> 
     <!-- Card type- credit/debit, card number, name on card, expiration date -->
     <div id = "payment_info">

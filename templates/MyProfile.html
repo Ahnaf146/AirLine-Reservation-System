@@ -35,9 +35,39 @@
     </section>
 
     <section class = "banners"> 
-    <h1> Your spending: ${{tot_spend}} </h1>
+    <h1> Your Yearly Spending: ${{spending_year}} </h1>
+    <h1> Your Monthly Spending: ${{spending_month}} </h1>
     </section>
-    
+    <form method = 'POST' action="/profile"> 
+        <h1> Search Spending between these dates </h1>
+        <label for="startdate">Departure Date:</label>
+        <input type="date" id="startdate" name="startdate" placeholder="Start Date">
+        <label for="enddate">Return Date:</label>
+        <input type="date" id="enddate" name="enddate" placeholder="End Date">
+        <a>
+            <input type="submit" value="Submit">
+        </a>
+    </form>
+    {%if queryspending%}
+    <h1> Your Query Spending: ${{queryspending.queryspending}} </h1>
+    {%endif%}
+
+    <table id = "table"> 
+        <th>Month 1</th>
+        <th>Month 2</th>
+        <th>Month 3</th>
+        <th>Month 4</th>
+        <th>Month 5</th>
+        <th>Month 6</th>
+        <tr>
+            <td>{{spending_1.spending_1}}</td>
+            <td>{{spending_2.spending_2}}</td>
+            <td>{{spending_3.spending_3}}</td>
+            <td>{{spending_4.spending_4}}</td>
+            <td>{{spending_5.spending_5}}</td>
+            <td>{{spending_6.spending_6}}</td>
+        </tr>
+    </table>
 
         <!-- Pop the flight from database
              Delete entry WHERE flight_info corresponds

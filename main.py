@@ -10,9 +10,9 @@ app = Flask(__name__)
 conn = pymysql.connect(host='localhost',
                        user='root',
                        password='root',
-                       db='Air Ticket Reservation System',
+                       db='air ticket reservation system',
                        charset='utf8mb4',
-                       port = 3306,
+                       port = 8889,
                        cursorclass=pymysql.cursors.DictCursor)
 
 # mysql = MySQL(app)
@@ -159,39 +159,73 @@ def register():
 #Load up any flights where id is the same 
 #And display them 
 def profile():
-    total_spending = 0
+
     customer = session['customer']
     cursor = conn.cursor()
     #Selects ticket information where username is same and orders it by time
     query = 'SELECT Ticket_id, flight_number, sold_price FROM ticket NATURAL JOIN Customer WHERE Customer.EMAIL = %s AND Customer.EMAIL = ticket.EMAIL'
     cursor.execute(query, (customer))
     data1 = cursor.fetchall()
+    query = 'SELECT SUM(sold_price) FROM ticket WHERE purchase_date > DATE_ADD(NOW(), INTERVAL -1 MONTH) AND Email = %s'
+    cursor.execute(query, customer)
+    spending_year = cursor.fetchone()
+    query = 'SELECT SUM(sold_price) FROM ticket WHERE purchase_date > DATE_ADD(NOW(), INTERVAL -1 YEAR) AND Email = %s'
+    cursor.execute(query, customer)
+    spending_month = cursor.fetchone()
+
+    query = "SELECT SUM(sold_price) AS 'spending_1'FROM ticket WHERE purchase_date BETWEEN DATE_ADD(NOW(), INTERVAL -1 MONTH) AND NOW() AND Email = %s"
+    cursor.execute(query, customer)
+    spending_1 = cursor.fetchone()
+    query = "SELECT SUM(sold_price) AS 'spending_2' FROM ticket WHERE purchase_date BETWEEN DATE_ADD(NOW(), INTERVAL -2 MONTH) AND DATE_ADD(NOW(), INTERVAL -1 MONTH) AND Email = %s"
+    cursor.execute(query, customer)
+    spending_2 = cursor.fetchone()
+    query = "SELECT SUM(sold_price) AS 'spending_3' FROM ticket WHERE purchase_date BETWEEN DATE_ADD(NOW(), INTERVAL -3 MONTH) AND DATE_ADD(NOW(), INTERVAL -2 MONTH) AND Email = %s"    # cursor.execute(query, customer)
+    cursor.execute(query, customer)
+    spending_3 = cursor.fetchone()
+    query = "SELECT SUM(sold_price) AS 'spending_4' FROM ticket WHERE purchase_date BETWEEN DATE_ADD(NOW(), INTERVAL -4 MONTH) AND DATE_ADD(NOW(), INTERVAL -3 MONTH) AND Email = %s"    # cursor.execute(query, customer)
+    cursor.execute(query, customer)
+    spending_4 = cursor.fetchone()
+    query = "SELECT SUM(sold_price) AS 'spending_5' FROM ticket WHERE purchase_date BETWEEN DATE_ADD(NOW(), INTERVAL -5 MONTH) AND DATE_ADD(NOW(), INTERVAL -4 MONTH) AND Email = %s"    # cursor.execute(query, customer)
+    cursor.execute(query, customer)
+    spending_5 = cursor.fetchone()
+    query = "SELECT SUM(sold_price) AS 'spending_6' FROM ticket WHERE purchase_date BETWEEN DATE_ADD(NOW(), INTERVAL -6 MONTH) AND DATE_ADD(NOW(), INTERVAL -5 MONTH) AND Email = %s"    # cursor.execute(query, customer)
+    cursor.execute(query, customer)
+    spending_6 = cursor.fetchone()
     cursor.close()
-    for dict in data1:
-        total_spending += dict['sold_price']
+
     if request.method == 'POST':
         cursor = conn.cursor()
         flight_id = request.form.get('flight_id')
         name = request.form.get('name')
         rating = request.form.get('rating')
         comments = request.form.get('comments')
-        query1 = 'SELECT flight_number from Ticket where flight_number = %s'
-        cursor.execute(query1, flight_id )
-        data2 = cursor.fetchall()
-        result = None
-        print(data2)
+        startdate = request.form.get('startdate')
+        enddate = request.form.get('enddate')
+        
+        queryspending = 0
+        if startdate:
+            query2 = "SELECT SUM(sold_price) AS 'queryspending' FROM ticket NATURAL JOIN Customer WHERE Customer.email = %s AND Customer.email = ticket.Email AND purchase_date BETWEEN %s AND %s"
+            cursor.execute(query2, (customer, enddate, startdate))
+            queryspending = cursor.fetchone()
+            return render_template("MyProfile.html", info=data1, customer=customer, spending_year = spending_year, spending_month = spending_month,queryspending = queryspending,spending_1 = spending_1, spending_2 = spending_2, spending_3 = spending_3, spending_4 = spending_4, spending_5 = spending_5, spending_6 = spending_6)
+        if flight_id:
+            query1 = 'SELECT flight_number from Ticket where flight_number = %s'
+            cursor.execute(query1, flight_id )
+            data2 = cursor.fetchall()
+            result = None
         if data2:
+            print(data2)
             result = "Thank you for your review!"
             insert = 'Insert INTO customer_review VALUES(%s, %s, %s, %s)'
             cursor.execute(insert, (flight_id, name, rating, comments))
             conn.commit()
             cursor.close()
-            return render_template("MyProfile.html", info=data2, customer=customer, result = result, tot_spend = total_spending)
+            return render_template("MyProfile.html", info=data2, customer=customer, result = result, spending_year = spending_year, spending_month = spending_month,spending_1 = spending_1, spending_2 = spending_2, spending_3 = spending_3, spending_4 = spending_4, spending_5 = spending_5, spending_6 = spending_6)
         else:
             result = "Error. Flight not found"
-            return render_template("MyProfile.html", info=data2, customer=customer, result= result, tot_spend = total_spending)
+            return render_template("MyProfile.html", info=data2, customer=customer, spending_year = spending_year, spending_month = spending_month,spending_1 = spending_1, spending_2 = spending_2, spending_3 = spending_3, spending_4 = spending_4, spending_5 = spending_5, spending_6 = spending_6)
 
-    return render_template("MyProfile.html", info = data1, customer=customer, tot_spend = total_spending)
+    return render_template("MyProfile.html", info = data1, customer=customer, spending_year = spending_year, spending_month = spending_month,spending_1 = spending_1, spending_2 = spending_2, spending_3 = spending_3, spending_4 = spending_4, spending_5 = spending_5, spending_6 = spending_6)
 
 
 
@@ -236,6 +270,24 @@ def staffprofile():
     cursor.execute(query, (airline['Airline_name']))
     count_month = cursor.fetchone()
 
+    query = "SELECT COUNT(*) AS 'spending_1'FROM ticket WHERE purchase_date BETWEEN DATE_ADD(NOW(), INTERVAL -1 MONTH) AND NOW() AND Airline_name = %s"
+    cursor.execute(query, (airline['Airline_name']))
+    spending_1 = cursor.fetchone()
+    query = "SELECT COUNT(*) AS 'spending_2' FROM ticket WHERE purchase_date BETWEEN DATE_ADD(NOW(), INTERVAL -2 MONTH) AND DATE_ADD(NOW(), INTERVAL -1 MONTH) AND Airline_name = %s"
+    cursor.execute(query, (airline['Airline_name']))
+    spending_2 = cursor.fetchone()
+    query = "SELECT COUNT(*) AS 'spending_3' FROM ticket WHERE purchase_date BETWEEN DATE_ADD(NOW(), INTERVAL -3 MONTH) AND DATE_ADD(NOW(), INTERVAL -2 MONTH) AND Airline_name = %s"    # cursor.execute(query, customer)
+    cursor.execute(query, (airline['Airline_name']))
+    spending_3 = cursor.fetchone()
+    query = "SELECT COUNT(*) AS 'spending_4' FROM ticket WHERE purchase_date BETWEEN DATE_ADD(NOW(), INTERVAL -4 MONTH) AND DATE_ADD(NOW(), INTERVAL -3 MONTH) AND Airline_name = %s"    # cursor.execute(query, customer)
+    cursor.execute(query, (airline['Airline_name']))
+    spending_4 = cursor.fetchone()
+    query = "SELECT COUNT(*) AS 'spending_5' FROM ticket WHERE purchase_date BETWEEN DATE_ADD(NOW(), INTERVAL -5 MONTH) AND DATE_ADD(NOW(), INTERVAL -4 MONTH) AND Airline_name = %s"    # cursor.execute(query, customer)
+    cursor.execute(query, (airline['Airline_name']))
+    spending_5 = cursor.fetchone()
+    query = "SELECT COUNT(*) AS 'spending_6' FROM ticket WHERE purchase_date BETWEEN DATE_ADD(NOW(), INTERVAL -6 MONTH) AND DATE_ADD(NOW(), INTERVAL -5 MONTH) AND Airline_name = %s"    # cursor.execute(query, customer)
+    cursor.execute(query, (airline['Airline_name']))
+    spending_6 = cursor.fetchone()
 
     if request.method == 'POST':
         reviews = None
@@ -260,9 +312,9 @@ def staffprofile():
             cursor.execute(query, (email, airline['Airline_name']))
             customerflights = cursor.fetchall()
         
-        return render_template("staffprofile.html", staffuser = username, averagerating=averagerating,  reviews=reviews, flights=flights,mostfrequent=mostfrequent,customerflights=customerflights,total_year=total_year,total_month=total_month,count_year=count_year,count_month=count_month)
+        return render_template("staffprofile.html", staffuser = username, averagerating=averagerating,  reviews=reviews, flights=flights,mostfrequent=mostfrequent,customerflights=customerflights,total_year=total_year,total_month=total_month,count_year=count_year,count_month=count_month,spending_1 = spending_1, spending_2 = spending_2, spending_3 = spending_3, spending_4 = spending_4, spending_5 = spending_5, spending_6 = spending_6)
     else:
-        return render_template("staffprofile.html", staffuser = username,flights=flights,mostfrequent=mostfrequent,total_month=total_month,total_year=total_year,count_year=count_year,count_month=count_month)
+        return render_template("staffprofile.html", staffuser = username,flights=flights,mostfrequent=mostfrequent,total_month=total_month,total_year=total_year,count_year=count_year,count_month=count_month,spending_1 = spending_1, spending_2 = spending_2, spending_3 = spending_3, spending_4 = spending_4, spending_5 = spending_5, spending_6 = spending_6)
 
 @app.route('/staffview')
 #View flight ratings, frequent customers, reports, earned revenue
@@ -350,6 +402,7 @@ def addairplane():
         Num_of_seats = request.form.get('Num_of_seats')
         Age = request.form.get('Age')
         airline_name = request.form.get('airline_name')
+        print(airline_name)
         cursor = conn.cursor()
         query = 'SELECT * from airplane WHERE airplane_id= %s'
         cursor.execute(query, (airplane_id))
@@ -395,7 +448,7 @@ def addflight():
         arrival_airport = request.form.get('arrival_airport')
         arrival_date = request.form.get('arrival_date')
         arrival_time = request.form.get('arrival_time')
-        airplane_id = request.form.get('airplane_id')
+        airplane_id = request.form.get('airplanes')
         status = request.form.get('status')
         # airline_name = request.form.get('airline_name')
         airline_name = 'Jet Blue'
@@ -412,6 +465,7 @@ def addflight():
             return render_template("addflight.html", message=message)
         else:
             ins = 'INSERT INTO flight VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
+            print(flight_num, price, departure_airport, departure_date, departure_time, arrival_airport, arrival_date, arrival_time, status, airline_name,  airplane_id)
             cursor.execute(ins, (flight_num, price, departure_airport, departure_date, departure_time, arrival_airport, arrival_date, arrival_time, status, airline_name,  airplane_id))
             conn.commit()
             cursor.close()
@@ -435,19 +489,26 @@ def addflight():
 
 @app.route('/bookflight/<flight_num>', methods=['GET', 'POST'])
 def bookflight(flight_num):
+    cursor = conn.cursor()
+    query = 'SELECT * FROM flight WHERE flight_number = %s'
+    cursor.execute(query, (flight_num))
+    flight = cursor.fetchone()
+    query = 'SELECT Num_of_seats FROM airplane WHERE Airplane_id = %s'
+    cursor.execute(query, (flight.get('Airplane_id')))
+    capacity = cursor.fetchone()
+    query = "SELECT COUNT(*) as 'occupied' FROM ticket WHERE flight_number = %s"
+    cursor.execute(query, (flight_num))
+    price = flight.get('Base_Price')
+    print(price)
     if request.method == "POST":
         customer = request.form.get('customer')
         cursor = conn.cursor()
-        query = 'SELECT Base_price FROM flight WHERE flight_number = %s'
-        cursor.execute(query, (flight_num))
-        data = cursor.fetchone()
         query = 'SELECT Airline_name FROM flight WHERE flight_number = %s'
         cursor.execute(query, (flight_num))
         airline = cursor.fetchone()
-        if(data):
+        if(price):
             # redirect to payment page
             email = session['customer']
-            price = data.get('Base_price')
             i = 0
             while i < 1:
                 ticket_id = random.randint(1000,9999)
@@ -476,7 +537,7 @@ def bookflight(flight_num):
             return render_template("bookflight.html", message=message)
     else:
         print(flight_num)
-        return render_template('payment.html',flight_num=flight_num)
+        return render_template('payment.html',flight_num=flight_num, flight=flight)
 
 @app.route('/editflight/<flight_num>', methods=['GET', 'POST'])
 def editflight(flight_num):
