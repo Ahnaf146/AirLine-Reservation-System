@@ -12,7 +12,7 @@ conn = pymysql.connect(host='localhost',
                        password='root',
                        db='air ticket reservation system',
                        charset='utf8mb4',
-                       port = 8889,
+                       port = 3306,
                        cursorclass=pymysql.cursors.DictCursor)
 
 # mysql = MySQL(app)
@@ -166,12 +166,12 @@ def profile():
     query = 'SELECT Ticket_id, flight_number, sold_price FROM ticket NATURAL JOIN Customer WHERE Customer.EMAIL = %s AND Customer.EMAIL = ticket.EMAIL'
     cursor.execute(query, (customer))
     data1 = cursor.fetchall()
-    query = 'SELECT SUM(sold_price) FROM ticket WHERE purchase_date > DATE_ADD(NOW(), INTERVAL -1 MONTH) AND Email = %s'
-    cursor.execute(query, customer)
-    spending_year = cursor.fetchone()
-    query = 'SELECT SUM(sold_price) FROM ticket WHERE purchase_date > DATE_ADD(NOW(), INTERVAL -1 YEAR) AND Email = %s'
+    query = "SELECT SUM(sold_price) AS 'spending_month' FROM ticket WHERE purchase_date > DATE_ADD(NOW(), INTERVAL -1 MONTH) AND Email = %s"
     cursor.execute(query, customer)
     spending_month = cursor.fetchone()
+    query = "SELECT SUM(sold_price) AS 'spending_year'FROM ticket WHERE purchase_date > DATE_ADD(NOW(), INTERVAL -1 YEAR) AND Email = %s"
+    cursor.execute(query, customer)
+    spending_year = cursor.fetchone()
 
     query = "SELECT SUM(sold_price) AS 'spending_1'FROM ticket WHERE purchase_date BETWEEN DATE_ADD(NOW(), INTERVAL -1 MONTH) AND NOW() AND Email = %s"
     cursor.execute(query, customer)
@@ -501,7 +501,11 @@ def bookflight(flight_num):
     capacity = cursor.fetchone()
     query = "SELECT COUNT(*) as 'occupied' FROM ticket WHERE flight_number = %s"
     cursor.execute(query, (flight_num))
+    occupied = cursor.fetchone()
+    print(occupied, capacity)
     price = flight.get('Base_Price')
+    if (occupied.get('occupied')/capacity.get('Num_of_seats')) > 0.6:
+        price = price * 1.25
     print(price)
     if request.method == "POST":
         customer = request.form.get('customer')
@@ -540,7 +544,7 @@ def bookflight(flight_num):
             return render_template("bookflight.html", message=message)
     else:
         print(flight_num)
-        return render_template('payment.html',flight_num=flight_num, flight=flight)
+        return render_template('payment.html',flight_num=flight_num, flight=flight,price = price)
 
 @app.route('/editflight/<flight_num>', methods=['GET', 'POST'])
 def editflight(flight_num):

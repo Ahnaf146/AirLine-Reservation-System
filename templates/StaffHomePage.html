@@ -13,6 +13,7 @@
     
     <ul>
         <li> <a> {{user}} </a></li>
+        <li> <a href = "/staffprofile"> Profile </a> </li>
         <li style="float:right"> <a href = "/logout"> Logout </a> </li>
 
     </ul>
@@ -23,26 +24,6 @@
 
     <div id = "welcome">
         <h2> Welcome to AirlineReservation Inc.,  {{user}}</h2>
-        <a href= "/staffprofile">
-        <button type="submit" form="form" value="Submit">View your profile</button>
-        </a>
-
-        
-        <h3> Search for your next flight</h3>
-
-        <form action = " http://127.0.0.1:5000/result" method = "POST">
-            <p> Leaving From: <input type = "text" name = "Leaving From" /></p>
-            <p> Going To: <input type = "text" name = " Going To" /></p>
-            <label for="Departing">Departing:</label>
-            <input type="date" id="Departing" name="Departing">
-            <label for="Returning">Returning:</label>
-            <input type="date" id="Returning" name="Returning">
-            <p><input type="submit" value="Submit" </p>
-            
-
-
-
-        </form>
 
         <a href= "/addinfo">
             <button type="button" id = "homepage_button">Click here to book a flight</button> 
@@ -50,8 +31,7 @@
 
         <br> </br>
 
-        <h1> Announcements </h1>
-        <h1> Incoming flights  </h1>
+        <h1> All Incoming flights  </h1>
         <table>
             <th>Flight Number</th>
             <th>Departure Airport</th>

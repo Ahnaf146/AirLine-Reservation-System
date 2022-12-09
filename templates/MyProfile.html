@@ -19,9 +19,6 @@
     
     <!-- Nav header bar-->
 
-    <div id= "content"> 
-    <h3> Check out all your confirmed flights and other information</h3>
-
     <section class = "banners"> 
     <h1 style = "text-align: center"> Your confirmed flights </h1>
 
@@ -35,23 +32,9 @@
     </section>
 
     <section class = "banners"> 
-    <h1> Your Yearly Spending: ${{spending_year}} </h1>
-    <h1> Your Monthly Spending: ${{spending_month}} </h1>
-    </section>
-    <form method = 'POST' action="/profile"> 
-        <h1> Search Spending between these dates </h1>
-        <label for="startdate">Departure Date:</label>
-        <input type="date" id="startdate" name="startdate" placeholder="Start Date">
-        <label for="enddate">Return Date:</label>
-        <input type="date" id="enddate" name="enddate" placeholder="End Date">
-        <a>
-            <input type="submit" value="Submit">
-        </a>
-    </form>
-    {%if queryspending%}
-    <h1> Your Query Spending: ${{queryspending.queryspending}} </h1>
-    {%endif%}
-
+    <h1> Your Yearly Spending: ${{spending_year.spending_year}} </h1>
+    <h1> Your Monthly Spending: ${{spending_month.spending_month}} </h1>
+    
     <table id = "table"> 
         <th>Month 1</th>
         <th>Month 2</th>
@@ -68,6 +51,21 @@
             <td>{{spending_6.spending_6}}</td>
         </tr>
     </table>
+    </section>
+    <form method = 'POST' action="/profile"> 
+        <h1> Search Spending between these dates </h1>
+        <label for="startdate">Departure Date:</label>
+        <input type="date" id="startdate" name="startdate" placeholder="Start Date">
+        <label for="enddate">Return Date:</label>
+        <input type="date" id="enddate" name="enddate" placeholder="End Date">
+        <a>
+            <input type="submit" value="Submit">
+        </a>
+    </form>
+    {%if queryspending%}
+    <h1> Your Query Spending: ${{queryspending.queryspending}} </h1>
+    {%endif%}
+
 
         <!-- Pop the flight from database
              Delete entry WHERE flight_info corresponds
