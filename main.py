@@ -408,22 +408,25 @@ def addairplane():
         cursor.execute(query, (airplane_id))
         data = cursor.fetchone()
         error = None
+        cursor = conn.cursor()
+        query = 'SELECT Airline_name FROM airline'
+        cursor.execute(query)
+        airlines = cursor.fetchall()
         if(data):
             message = "This airplane already exists"
-            return render_template("addairplane.html", message=message)
+            return render_template("addairplane.html", message=message,airlines=airlines)
         else:
             ins = 'INSERT INTO airplane VALUES(%s, %s, %s, %s, %s, %s)'
             cursor.execute(ins, (airplane_id, Name, Manufacturing_company, Num_of_seats, Age, airline_name))
             conn.commit()
             cursor.close()
             message = "Airplane added successfully"
-            return render_template('addairplane.html', message=message)
+            return render_template('addairplane.html', message=message,airlines=airlines)
     else:
         cursor = conn.cursor()
         query = 'SELECT Airline_name FROM airline'
         cursor.execute(query)
         airlines = cursor.fetchall()
-        cursor.execute(query)
         return render_template('addairplane.html', airlines=airlines)
 
 #Adds the flight,airport, and airplane

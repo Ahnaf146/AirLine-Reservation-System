@@ -31,7 +31,7 @@
         <label for="airline_name">Airline Name:</label>
         <select  list="airline_name" id="airline_name" name="airline_name" placeholder="Airline Name" required>
             {%for line in airlines%}
-            <option value={{line['Airline_name']}}>{{line['Airline_name']}}</option>
+            <option value="{{line['Airline_name']}}">{{line['Airline_name']}}</option>
             {%endfor%}
         </select>
 
