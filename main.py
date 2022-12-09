@@ -12,7 +12,7 @@ conn = pymysql.connect(host='localhost',
                        password='root',
                        db='air ticket reservation system',
                        charset='utf8mb4',
-                       port = 3306,
+                       port = 8889,
                        cursorclass=pymysql.cursors.DictCursor)
 
 # mysql = MySQL(app)
@@ -61,6 +61,9 @@ def login():
         #stores the results in a variable
         data = cursor.fetchone()
         #use fetchall() if you are expecting more than 1 data row
+        if data is None:
+            error = 'Invalid login or username'
+            return render_template('Login.html', user=username, error=error)
         cursor.close()
         error = None
         if bcrypt.checkpw(password.encode('utf8'), data['password'].encode('utf8')):
@@ -85,6 +88,9 @@ def staff_login():
         cursor.execute(query,(username))
         #stores the results in a variable
         data = cursor.fetchone()
+        if data is None:
+            error = 'Invalid login or username'
+            return render_template('StaffLogin.html', user=username, error=error)   
         #use fetchall() if you are expecting more than 1 data row
         cursor.close()
         error = None
@@ -92,7 +98,6 @@ def staff_login():
             session['staff'] = username
             return redirect(url_for('home'))
         else:
-        #returns an error message to the html page
             error = 'Invalid login or username'
             return render_template('StaffLogin.html', user=username, error=error)
     else:
