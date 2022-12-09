@@ -645,6 +645,24 @@ def addinfo():
         else:
             return render_template("Addinfo.html", airports=airports)
 
+@app.route('/addphone_no', methods = ['GET', 'POST'])
+def addphone_no():
+    if request.method == "POST":
+        cursor = conn.cursor()
+        if 'customer' in session:
+            user = session['customer']
+        if 'staff' in session:
+            user = session['staff']
+        phone_no = request.form.get('phone_no')
+        query = 'INSERT INTO phone_no VALUES (%s, %s)'
+        cursor.execute(query, (phone_no, user))
+        conn.commit()
+        cursor.close()
+        message = "Phone number added successfully"
+        return render_template('Phone_no.html', message=message)
+    else:
+        return render_template('Phone_no.html')
+
 #DO NOW
 # #Adds on to previous function based on query
 # @app.route('/bookflight', methods = ['GET', 'POST'])

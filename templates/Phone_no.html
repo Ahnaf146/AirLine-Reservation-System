@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel= "stylesheet" href = "{{url_for('static', filename='css/login.css')}}">
+</head>
+<body>
+    {%if message %}
+    <h1 style= "text-align:center">{{message}}</h1>
+    {% endif %}
+
+
+    <h1 style= "text-align:center">Add Phone Number</h1>
+    
+    <div>
+        <form method = "POST" action="/addphone_no">
+        <label for="phone_no">Phone Number:</label>
+        <input type="text" id="phone_no" name="phone_no" placeholder="Phone Number" required>
+
+        <a>
+        <input type="submit" value="Submit">
+        </a>
+        
+        </form>
+    </div>
+
+
+    
+</body>
+</html>
