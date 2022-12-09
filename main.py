@@ -163,7 +163,7 @@ def profile():
     customer = session['customer']
     cursor = conn.cursor()
     #Selects ticket information where username is same and orders it by time
-    query = 'SELECT Ticket_id, flight_number, sold_price FROM ticket NATURAL JOIN Customer WHERE Customer.EMAIL = %s AND Customer.EMAIL = ticket.EMAIL'
+    query = 'SELECT Ticket_id, flight_number, sold_price, Airline_name FROM ticket NATURAL JOIN Customer WHERE Customer.EMAIL = %s AND Customer.EMAIL = ticket.EMAIL'
     cursor.execute(query, (customer))
     data1 = cursor.fetchall()
     query = "SELECT SUM(sold_price) AS 'spending_month' FROM ticket WHERE purchase_date > DATE_ADD(NOW(), INTERVAL -1 MONTH) AND Email = %s"
@@ -191,6 +191,11 @@ def profile():
     query = "SELECT SUM(sold_price) AS 'spending_6' FROM ticket WHERE purchase_date BETWEEN DATE_ADD(NOW(), INTERVAL -6 MONTH) AND DATE_ADD(NOW(), INTERVAL -5 MONTH) AND Email = %s"    # cursor.execute(query, customer)
     cursor.execute(query, customer)
     spending_6 = cursor.fetchone()
+
+
+    query = 'SELECT * FROM ticket NATURAL JOIN flight WHERE ticket.Email = %s AND ticket.flight_number = flight.flight_number AND flight.Arrival_date < NOW()'
+    cursor.execute(query, (customer))
+    reviewflights = cursor.fetchall()
     cursor.close()
 
     if request.method == 'POST':
@@ -216,16 +221,16 @@ def profile():
         if data2:
             print(data2)
             result = "Thank you for your review!"
-            insert = 'Insert INTO customer_review VALUES(%s, %s, %s, %s)'
-            cursor.execute(insert, (flight_id, name, rating, comments))
+            insert = 'Insert INTO customer_review VALUES(%s, %s, %s, %s, %s)'
+            cursor.execute(insert, (flight_id, name, rating, comments, data1[0]['Airline_name']))
             conn.commit()
             cursor.close()
-            return render_template("MyProfile.html", info=data2, customer=customer, result = result, spending_year = spending_year, spending_month = spending_month,spending_1 = spending_1, spending_2 = spending_2, spending_3 = spending_3, spending_4 = spending_4, spending_5 = spending_5, spending_6 = spending_6)
+            return render_template("MyProfile.html", info=data1, customer=customer, result = result, spending_year = spending_year, spending_month = spending_month,spending_1 = spending_1, spending_2 = spending_2, spending_3 = spending_3, spending_4 = spending_4, spending_5 = spending_5, spending_6 = spending_6,reviewflights=reviewflights)
         else:
             result = "Error. Flight not found"
-            return render_template("MyProfile.html", info=data2, customer=customer, spending_year = spending_year, spending_month = spending_month,spending_1 = spending_1, spending_2 = spending_2, spending_3 = spending_3, spending_4 = spending_4, spending_5 = spending_5, spending_6 = spending_6)
+            return render_template("MyProfile.html", info=data1, customer=customer, spending_year = spending_year, spending_month = spending_month,spending_1 = spending_1, spending_2 = spending_2, spending_3 = spending_3, spending_4 = spending_4, spending_5 = spending_5, spending_6 = spending_6,  reviewflights=reviewflights)
 
-    return render_template("MyProfile.html", info = data1, customer=customer, spending_year = spending_year, spending_month = spending_month,spending_1 = spending_1, spending_2 = spending_2, spending_3 = spending_3, spending_4 = spending_4, spending_5 = spending_5, spending_6 = spending_6)
+    return render_template("MyProfile.html", info = data1, customer=customer, spending_year = spending_year, spending_month = spending_month,spending_1 = spending_1, spending_2 = spending_2, spending_3 = spending_3, spending_4 = spending_4, spending_5 = spending_5, spending_6 = spending_6, reviewflights=reviewflights)
 
 
 
@@ -255,14 +260,14 @@ def staffprofile():
     query = 'SELECT Name FROM customer WHERE email = %s'
     cursor.execute(query, (email[0]['Email']))
     mostfrequent = cursor.fetchone()
-    query = "SELECT SUM(sold_price) AS 'total_year'  FROM ticket WHERE purchase_date > DATE_ADD(NOW(), INTERVAL -1 MONTH) AND Airline_name = %s"
-    cursor.execute(query, (airline['Airline_name']))
-    total_year = cursor.fetchone()
-    totalyear = total_year['total_year']
-    query = "SELECT SUM(sold_price) AS 'total_month' FROM ticket WHERE purchase_date > DATE_ADD(NOW(), INTERVAL -1 YEAR) AND Airline_name = %s"
+    query = "SELECT SUM(sold_price) AS 'total_month'  FROM ticket WHERE purchase_date > DATE_ADD(NOW(), INTERVAL -1 MONTH) AND Airline_name = %s"
     cursor.execute(query, (airline['Airline_name']))
     total_month = cursor.fetchone()
     totalmonth = total_month['total_month']
+    query = "SELECT SUM(sold_price) AS 'total_year' FROM ticket WHERE purchase_date > DATE_ADD(NOW(), INTERVAL -1 YEAR) AND Airline_name = %s"
+    cursor.execute(query, (airline['Airline_name']))
+    total_year = cursor.fetchone()
+    totalyear = total_year['total_year']
     query = "SELECT COUNT(*) AS 'count_year'  FROM ticket WHERE purchase_date > DATE_ADD(NOW(), INTERVAL -1 YEAR) AND Airline_name = %s"
     cursor.execute(query, (airline['Airline_name']))
     count_year = cursor.fetchone()

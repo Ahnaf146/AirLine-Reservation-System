@@ -19,6 +19,9 @@
     <!-- Load up recent flight information Gather variables from app.py-->
     
     <!-- Nav header bar-->
+    {%if result %}
+    <h1 style= "text-align:center">{{result}}</h1>
+    {% endif %}
 
     <section class = "banners"> 
     <h1 style = "text-align: center"> Your confirmed flights </h1>
@@ -81,10 +84,12 @@
     <div class="container">
         <form method = 'POST' action="/profile"> 
         
-          
-          <label for="flight_id">Flight id: </label>
-          <input type="text" id = "flight_id" name="flight_id" placeholder= "Choose flight number"> 
-
+        <label for="flight_id">Flight id:</label>
+        <select  list="flight_id" id="flight_id" name="flight_id" placeholder="flight id" required>
+            {%for line in reviewflights%}
+            <option value="{{line['flight_number']}}">{{line['flight_number']}}</option>
+            {%endfor%}
+        </select>
 
           <label for="fname">Name</label>
           <input type="text" id="fname" name="name" placeholder="Your name..">.
@@ -103,10 +108,6 @@
           <textarea id="comments" name="comments" placeholder="Write something.." style="height:200px"></textarea>
       
           <input style= "justify-content: center" type="submit" value="Submit">
-          {% if result %}
-          <h1> {{result}} </h1>
-          {% endif %}
-
         </form>
       </div>
         
